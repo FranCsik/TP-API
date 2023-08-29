@@ -1,15 +1,22 @@
 version: "3.8"
 services:
   backend:
-    build: ./java
+    build: ./backend
     expose:
       - 80
+    networks:
+      - backend
   sql:
-    image: mysql:5.7
+    image: mysql:8.1.0
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: test
-      MYSQL_USER: root
-      MYSQL_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: 123456789
+      MYSQL_DATABASE: api
+      MYSQL_USER: api
+      MYSQL_PASSWORD: 123456789
     ports:
-      - 3306:3306
+      - expose
+    networks:
+      - backend
+
+networks:
+  backend:
