@@ -9,23 +9,36 @@ import com.example.demo.views.EdificioView;
 
 import jakarta.persistence.*;
 
-//@Entity
-//@Table(name="edificios")
+@Entity
+@Table(name="edificios")
 public class Edificio {
-	//@Id
+	@Id
 	private int codigo;
 	private String nombre;
 	private String direccion;
-	//@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-	//@JoinColumn(name="id")
+	@OneToMany(fetch = FetchType.EAGER)
+	@JoinColumn(name="identificador")
 	private List<Unidad> unidades;
 	
-	public Edificio(int codigo, String nombre, String direccion) {
+	public Edificio(int codigo, String nombre, String direccion) {}
+	public Edificio() {}
+	
+	public void setCodigo(int codigo) {
 		this.codigo = codigo;
-		this.nombre = nombre;
-		this.direccion = direccion;
-		unidades = new ArrayList<Unidad>();
 	}
+
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
+
+	public void setDireccion(String direccion) {
+		this.direccion = direccion;
+	}
+
+	public void setUnidades(List<Unidad> unidades) {
+		this.unidades = unidades;
+	}
+
 	
 	public void agregarUnidad(Unidad unidad) {
 		unidades.add(unidad);

@@ -9,6 +9,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import com.example.demo.dao.PersonaRepository;
+import com.example.demo.dao.UnidadRepository;
 import com.example.demo.model.*;
 
 @SpringBootApplication
@@ -16,6 +17,8 @@ public class Application implements CommandLineRunner {
 	
 	@Autowired
 	PersonaRepository personaRepositorio;
+	@Autowired
+	UnidadRepository unidadRepository;
 
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
@@ -23,10 +26,13 @@ public class Application implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		System.out.println("Hola breo");
-		List<Persona> personas = personaRepositorio.findAll();
-		for( Persona p: personas ) {
-			System.out.println(p.getNombre());
+		System.out.println("Hola mundo");
+		List<Unidad> unidades = unidadRepository.findAll();
+		for( Unidad u: unidades ) {
+			for (Persona p: u.getDuenios()) {
+				System.out.println(p.getDocumento());				
+			}
+			
 		}
 	}
 

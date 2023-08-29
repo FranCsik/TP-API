@@ -8,18 +8,33 @@ import com.example.demo.views.EdificioView;
 import com.example.demo.views.UnidadView;
 
 import jakarta.persistence.*;
-//@Entity
+@Entity
+@Table(name="unidades")
 public class Unidad {
-	//@Id
-	//@Column(name="identificador")
+	@Column(name="identificador")
+	@Id
 	private int id;
 	private String piso;
 	private String numero;
 	private boolean habitado;
-	//@ManyToOne
-	//@JoinColumn(name="codigo")
+	@ManyToOne
+	@JoinColumn(name="codigoedificio")
 	private Edificio edificio;
+	@ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(
+	        name = "duenios", 
+	        joinColumns = { @JoinColumn(name = "identificador") }, 
+	        inverseJoinColumns = { @JoinColumn(name = "documento"), }
+	    )
+	//@JoinColumn(table="duenios", name="documento", referencedColumnName="documento")
 	private List<Persona> duenios;
+	@ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(
+	        name = "inquilinos", 
+	        joinColumns = { @JoinColumn(name = "identificador") }, 
+	        inverseJoinColumns = { @JoinColumn(name = "documento") }
+	    )
+	//@JoinColumn(table="inquilinos", name="documento", referencedColumnName="documento")
 	private List<Persona> inquilinos;
 	
 	public Unidad(int id, String piso, String numero, Edificio edificio) {
@@ -31,6 +46,8 @@ public class Unidad {
 		this.duenios = new ArrayList<Persona>();
 		this.inquilinos = new ArrayList<Persona>();
 	}
+	
+	public Unidad() {}
 
 	public void transferir(Persona nuevoDuenio) {
 		duenios = new ArrayList<Persona>();
