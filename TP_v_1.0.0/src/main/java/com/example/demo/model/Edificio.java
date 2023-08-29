@@ -9,13 +9,15 @@ import com.example.demo.views.EdificioView;
 
 import jakarta.persistence.*;
 
+//@Entity
+//@Table(name="edificios")
 public class Edificio {
-	
+	//@Id
 	private int codigo;
 	private String nombre;
 	private String direccion;
-	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-	@JoinColumn(name="id")
+	//@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	//@JoinColumn(name="id")
 	private List<Unidad> unidades;
 	
 	public Edificio(int codigo, String nombre, String direccion) {

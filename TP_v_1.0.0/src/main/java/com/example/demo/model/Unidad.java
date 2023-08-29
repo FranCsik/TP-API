@@ -8,16 +8,16 @@ import com.example.demo.views.EdificioView;
 import com.example.demo.views.UnidadView;
 
 import jakarta.persistence.*;
-@Entity
+//@Entity
 public class Unidad {
-	@Id
-	@Column(name="identificador")
+	//@Id
+	//@Column(name="identificador")
 	private int id;
 	private String piso;
 	private String numero;
 	private boolean habitado;
-	@ManyToOne
-	@JoinColumn(name="codigo")
+	//@ManyToOne
+	//@JoinColumn(name="codigo")
 	private Edificio edificio;
 	private List<Persona> duenios;
 	private List<Persona> inquilinos;
