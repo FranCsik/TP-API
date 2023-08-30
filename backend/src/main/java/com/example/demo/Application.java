@@ -26,7 +26,7 @@ public class Application implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		System.out.println("Hola mundo");
+		System.out.println("Hola mundo  ");
 		List<Unidad> unidades = unidadRepository.findAll();
 		for( Unidad u: unidades ) {
 			for (Persona p: u.getDuenios()) {
