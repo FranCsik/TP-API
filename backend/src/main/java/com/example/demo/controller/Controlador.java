@@ -1,55 +1,74 @@
 package com.example.demo.controller;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 
 import com.example.demo.model.*;
 import com.example.demo.views.*;
+import com.example.demo.dao.*;
 import com.example.demo.exceptions.*;
 
+@Controller
 public class Controlador {
-
-	private static Controlador instancia;
 	
-	private Controlador() { }
+	@Autowired
+	EdificioRepository edificioRepository;
+	@Autowired
+	PersonaRepository personaRepository;
+	@Autowired
+	UnidadRepository unidadRepository;
 	
-	public static Controlador getInstancia() {
-		if(instancia == null)
-			instancia = new Controlador();
-		return instancia;
-	}
 	
 	public List<EdificioView> getEdificios(){
-		return null;
+		List<Edificio> edificios = edificioRepository.findAll();
+		List<EdificioView> views = new ArrayList<EdificioView>();
+		for(Edificio e: edificios) {
+			views.add( e.toView() );
+		}
+		return views;
 	}
+	
 	
 	public List<UnidadView> getUnidadesPorEdificio(int codigo) throws EdificioException{
 		List<UnidadView> resultado = new ArrayList<UnidadView>();
-		Edificio edificio = buscarEdificio(codigo);
-		List<Unidad> unidades = edificio.getUnidades();
-		for(Unidad unidad : unidades)
-			resultado.add(unidad.toView());
+		Optional<Edificio> edificio = edificioRepository.findById( codigo );
+		if( edificio.isPresent() ) {
+			List<Unidad> unidades = edificio.get().getUnidades();
+			for(Unidad unidad : unidades)
+				resultado.add(unidad.toView());
+		}
 		return resultado;
 	}
 	
 	public List<PersonaView> habilitadosPorEdificio(int codigo) throws EdificioException{
 		List<PersonaView> resultado = new ArrayList<PersonaView>();
-		Edificio edificio = buscarEdificio(codigo);
-		Set<Persona> habilitados = edificio.habilitados();
-		for(Persona persona : habilitados)
-			resultado.add(persona.toView());
+		Optional<Edificio> edificio = edificioRepository.findById( codigo );
+		if( edificio.isPresent() ) {
+			Set<Persona> habilitados = edificio.get().habilitados();
+			for(Persona persona : habilitados)
+				resultado.add(persona.toView());			
+		}
 		return resultado;
 	}
+
 
 	public List<PersonaView> dueniosPorEdificio(int codigo) throws EdificioException{
 		List<PersonaView> resultado = new ArrayList<PersonaView>();
-		Edificio edificio = buscarEdificio(codigo);
-		Set<Persona> duenios = edificio.duenios();
-		for(Persona persona : duenios)
-			resultado.add(persona.toView());
-		return resultado;
+		Optional<Edificio> edificio = edificioRepository.findById( codigo );
+		if( edificio.isPresent() ){
+			for(Persona persona : edificio.get().duenios()) {
+				resultado.add(persona.toView());					
+			}
+
+		}
+		return resultado;			
 	}
 
+	/*FALTA CORREGIR DE ACA PARA ABAJO*/
 	public List<PersonaView> habitantesPorEdificio(int codigo) throws EdificioException{
 		List<PersonaView> resultado = new ArrayList<PersonaView>();
 		Edificio edificio = buscarEdificio(codigo);
@@ -162,6 +181,10 @@ public class Controlador {
 	}*/
 	
 	private Edificio buscarEdificio(int codigo) throws EdificioException {
+		Optional<Edificio> oEdificio = edificioRepository.findById( codigo );
+		if( oEdificio.isPresent() ) {
+			return oEdificio.get();
+		}
 		return null;
 	}
 

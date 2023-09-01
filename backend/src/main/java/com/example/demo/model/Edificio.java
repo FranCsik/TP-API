@@ -16,8 +16,7 @@ public class Edificio {
 	private int codigo;
 	private String nombre;
 	private String direccion;
-	@OneToMany(fetch = FetchType.EAGER)
-	@JoinColumn(name="identificador")
+	@OneToMany(fetch = FetchType.EAGER, mappedBy="edificio")
 	private List<Unidad> unidades;
 	
 	public Edificio(int codigo, String nombre, String direccion) {}
@@ -78,7 +77,7 @@ public class Edificio {
 		for(Unidad unidad : unidades) {
 			List<Persona> duenios = unidad.getDuenios();
 			for(Persona p : duenios)
-				duenios.add(p);
+				resultado.add(p);
 		}
 		return resultado;
 	}
