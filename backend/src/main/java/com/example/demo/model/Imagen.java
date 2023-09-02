@@ -1,8 +1,14 @@
 package com.example.demo.model;
 
-public class Imagen {
+import jakarta.persistence.*;
 
+//@Entity
+//@Table(name="imagenes")
+public class Imagen {
+	
+	//@Id
 	private int numero;
+	//@Column(name="path")
 	private String direccion;
 	private String tipo;
 	

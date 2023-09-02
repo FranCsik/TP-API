@@ -3,6 +3,9 @@ package com.example.demo.model;
 import java.util.ArrayList;
 import java.util.List;
 
+
+import org.hibernate.type.YesNoConverter;
+
 import com.example.demo.exceptions.UnidadException;
 import com.example.demo.views.EdificioView;
 import com.example.demo.views.UnidadView;
@@ -16,6 +19,7 @@ public class Unidad {
 	private int id;
 	private String piso;
 	private String numero;
+	@Convert(converter = YesNoConverter.class)
 	private boolean habitado;
 	@ManyToOne
 	@JoinColumn(name="codigoedificio")

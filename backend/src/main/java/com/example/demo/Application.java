@@ -1,8 +1,10 @@
 package com.example.demo;
 
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -24,6 +26,10 @@ public class Application implements CommandLineRunner {
 	Controlador controlador;
 	@Autowired
 	EdificioRepository edificioRepository;
+	@Autowired
+	UnidadRepository unidadRepository;
+	@Autowired
+	PersonaRepository personaRepository;
 
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
@@ -32,22 +38,6 @@ public class Application implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 
-		/*List<EdificioView> views = controlador.getEdificios();
-		for( EdificioView v: views ) {
-			System.out.println( v.getDireccion() );
-		}*/
-		
-		List<PersonaView> view = controlador.dueniosPorEdificio(1);
-		int i = 0;
-		for( PersonaView v: view ) {
-			i++;
-			System.out.println( v.getNombre() );
-		}
-		System.out.println( i );
-		
-
-		
-		
 		
 	}
 

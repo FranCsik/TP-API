@@ -3,9 +3,16 @@ package com.example.demo.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.persistence.*;
+
+//@Entity
+//@Table(name="reclamos")
 public class Reclamo {
 
+	//@Id
+	//@Column(name="idReclamo")
 	private int numero;
+	//@Column(name="documento")
 	private Persona usuario;
 	private Edificio edificio;
 	private String ubicacion;
