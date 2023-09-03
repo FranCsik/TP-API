@@ -37,7 +37,13 @@ public class Application implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-
+		Unidad unidad = unidadRepository.findById(1).get();
+		List<Persona> duenios = unidad.getDuenios();
+		for( Persona p: duenios ) {
+			System.out.println( p.getDocumento() );
+			System.out.println( p.getNombre() );
+		}
+		System.out.println( unidad.getEdificio().getCodigo() );
 		
 	}
 

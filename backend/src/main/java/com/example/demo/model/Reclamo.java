@@ -5,20 +5,30 @@ import java.util.List;
 
 import jakarta.persistence.*;
 
-//@Entity
-//@Table(name="reclamos")
+@Entity
+@Table(name="reclamos")
 public class Reclamo {
 
-	//@Id
-	//@Column(name="idReclamo")
+	@Id
+	@Column(name="idReclamo")
 	private int numero;
-	//@Column(name="documento")
+	
+
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name="documento")
 	private Persona usuario;
+	
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name="codigo")
 	private Edificio edificio;
 	private String ubicacion;
 	private String descripcion;
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name="identificador")
 	private Unidad unidad;
 	//private Estado estado;
+	@OneToMany(fetch = FetchType.EAGER)
+	@JoinColumn(name="idReclamo")
 	private List<Imagen> imagenes;
 	
 	public Reclamo(Persona usuario, Edificio edificio, String ubicacion, String descripcion, Unidad unidad) {

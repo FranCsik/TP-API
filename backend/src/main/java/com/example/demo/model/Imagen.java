@@ -2,13 +2,13 @@ package com.example.demo.model;
 
 import jakarta.persistence.*;
 
-//@Entity
-//@Table(name="imagenes")
+@Entity
+@Table(name="imagenes")
 public class Imagen {
 	
-	//@Id
+	@Id
 	private int numero;
-	//@Column(name="path")
+	@Column(name="path")
 	private String direccion;
 	private String tipo;
 	
