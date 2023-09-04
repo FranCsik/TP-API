@@ -1,11 +1,14 @@
 version: "3.8"
 services:
   backend:
-    build: ./backend
+    image: gradle:8.3.0-jdk17
+    working_dir: /app
     expose:
       - 80
     networks:
       - backend
+    volumes:
+      - ./backend:/app
   sql:
     image: mysql:8.1.0
     environment:
@@ -13,10 +16,20 @@ services:
       MYSQL_DATABASE: api
       MYSQL_USER: api
       MYSQL_PASSWORD: 123456789
-    ports:
-      - expose
+    expose:
+      - 3306
     networks:
       - backend
+  frontend:
+    image: node:20.0.0
+    working_dir: /app
+    expose:
+      - 80
+    networks:
+      - backend
+      - default
+    volumes:
+      - ./frontend:/app
 
 networks:
   backend:
