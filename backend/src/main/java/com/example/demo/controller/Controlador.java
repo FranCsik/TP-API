@@ -201,6 +201,7 @@ public class Controlador {
 		Unidad unidad = buscarUnidad(codigoUnidad, piso, numero);
 		Persona persona = buscarPersona(documento);
 		Reclamo reclamo = new Reclamo(persona, edificio, ubicacion, descripcion, unidad, estado);
+		reclamoRepository.save(reclamo);
 		return reclamo.getNumero();
 	}
 	
