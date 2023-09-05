@@ -23,7 +23,7 @@ public class Controlador {
 	UnidadRepository unidadRepository;
 	@Autowired
 	ReclamoRepository reclamoRepository;
-	
+
 	
 	public List<EdificioView> getEdificios(){
 		List<Edificio> edificios = edificioRepository.findAll();
@@ -118,6 +118,7 @@ public class Controlador {
 
 	public void alquilarUnidad(int codigo, String piso, String numero, String documento) throws UnidadException, PersonaException{
 		Unidad unidad = buscarUnidad(codigo, piso, numero);
+		System.out.println( "Unidad: " + unidad.getId() );
 		Persona persona = buscarPersona(documento);
 		unidad.alquilar(persona);
 		unidadRepository.save(unidad);
@@ -157,10 +158,12 @@ public class Controlador {
 	public List<ReclamoView> reclamosPorEdificio(int codigo){
 		Edificio ed = edificioRepository.findById( codigo ).get();
 		List<Reclamo> reclamos = reclamoRepository.findByEdificio(ed);
+		System.out.println(reclamos.size());
 		List<ReclamoView> resultado = new ArrayList<ReclamoView>();
 		for( Reclamo r: reclamos ) {
 			resultado.add( r.toView() );
 		}
+		
 		return resultado;
 	}
 	
@@ -174,7 +177,7 @@ public class Controlador {
 		return resultado;
 	}
 	
-	public ReclamoView reclamosPorNumero(int numero) {
+	public ReclamoView reclamoPorNumero(int numero) {
 		Optional<Reclamo> reclamo = reclamoRepository.findById( numero );
 		ReclamoView resultado = null;
 		if( reclamo.isPresent() ) {
@@ -193,25 +196,25 @@ public class Controlador {
 		return resultado;
 	}
  
-	public int agregarReclamo(int codigoEdificio, int codigoUnidad, String piso, String numero, String documento, String ubicacion, String descripcion) throws EdificioException, UnidadException, PersonaException {
+	public int agregarReclamo(int codigoEdificio, int codigoUnidad, String piso, String numero, String documento, String ubicacion, String descripcion, Estado estado) throws EdificioException, UnidadException, PersonaException {
 		Edificio edificio = buscarEdificio(codigoEdificio);
 		Unidad unidad = buscarUnidad(codigoUnidad, piso, numero);
 		Persona persona = buscarPersona(documento);
-		Reclamo reclamo = new Reclamo(persona, edificio, ubicacion, descripcion, unidad);
-		//System.out.println( unidad.toString() );
-		reclamoRepository.save(reclamo);
+		Reclamo reclamo = new Reclamo(persona, edificio, ubicacion, descripcion, unidad, estado);
 		return reclamo.getNumero();
 	}
 	
 	public void agregarImagenAReclamo(int numero, String direccion, String tipo) throws ReclamoException {
 		Reclamo reclamo = buscarReclamo(numero);
-		reclamo.agregarImagen(direccion, tipo);
+		reclamo.agregarImagen( direccion, tipo );
+		reclamoRepository.save( reclamo );
 	}
 	
-	/*public void cambiarEstado(int numero, Estado estado) throws ReclamoException {
+	public void cambiarEstado(int numero, Estado estado) throws ReclamoException {
 		Reclamo reclamo = buscarReclamo(numero);
 		reclamo.cambiarEstado(estado);
-	}*/
+		reclamoRepository.save( reclamo );
+	}
 	
 	private Edificio buscarEdificio(int codigo) throws EdificioException {
 		Optional<Edificio> oEdificio = edificioRepository.findById( codigo );
@@ -240,6 +243,11 @@ public class Controlador {
 	}
 	
 	private Reclamo buscarReclamo(int numero) throws ReclamoException {
-		return null;
+		Optional<Reclamo> r = reclamoRepository.findById(numero);
+		if( r.isPresent() ) {
+			return r.get();
+		} else {
+			return null;
+		}
 	}
 }

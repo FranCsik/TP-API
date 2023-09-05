@@ -3,8 +3,10 @@ package com.example.demo.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.example.demo.views.Estado;
 import com.example.demo.views.ImagenView;
 import com.example.demo.views.ReclamoView;
+import com.example.demo.views.UnidadView;
 
 import jakarta.persistence.*;
 
@@ -30,18 +32,19 @@ public class Reclamo {
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name="identificador")
 	private Unidad unidad;
-	//private Estado estado;
-	@OneToMany(fetch = FetchType.EAGER)
+	@Enumerated(EnumType.STRING)
+	private Estado estado;
+	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinColumn(name="idreclamo")
 	private List<Imagen> imagenes;
 	
-	public Reclamo(Persona usuario, Edificio edificio, String ubicacion, String descripcion, Unidad unidad) {
+	public Reclamo(Persona usuario, Edificio edificio, String ubicacion, String descripcion, Unidad unidad, Estado estado) {
 		this.usuario = usuario;
 		this.edificio = edificio;
 		this.ubicacion = ubicacion;
 		this.descripcion = descripcion;
 		this.unidad = unidad;
-		//this.estado = Estado.nuevo;
+		this.estado = Estado.nuevo;
 		imagenes = new ArrayList<Imagen>();
 	}
 	
@@ -80,25 +83,33 @@ public class Reclamo {
 		return unidad;
 	}
 
-	/*public Estado getEstado() {
+	public Estado getEstado() {
 		return estado;
-	}*/
+	}
 	
 	public List<Imagen> getImagenes(){
 		return this.imagenes;
 	}
 	
-	/*public void cambiarEstado(Estado estado) {
+	public void cambiarEstado(Estado estado) {
 		this.estado = estado;
-	}*/
+	}
 	
 	public ReclamoView toView() {
 		List<ImagenView> imagenesView = new ArrayList<ImagenView>();
+		UnidadView unidadView;
+		
 		for( Imagen im: imagenes ) {
 			imagenesView.add( im.toView() );
 		}
 		
-		return new ReclamoView(numero, usuario.toView(), edificio.toView(), ubicacion, descripcion, unidad.toView(), imagenesView);
+		if( unidad == null ) {
+			unidadView = null;
+		} else {
+			unidadView = unidad.toView();
+		}
+		
+		return new ReclamoView(numero, usuario.toView(), edificio.toView(), ubicacion, descripcion, unidadView, imagenesView);
 		
 	}
 

@@ -9,6 +9,7 @@ import jakarta.persistence.*;
 public class Imagen {
 	
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int numero;
 	@Column(name="path")
 	private String direccion;

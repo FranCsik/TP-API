@@ -42,14 +42,7 @@ public class Application implements CommandLineRunner {
 	public void run(String... args) throws Exception {
 		
 
-		int reclamo = controlador.agregarReclamo(1, 1, "10", "6", "CI 13230978", "baño", "no funciona la luz");
-		
 
-		
-		/*for( ReclamoView r: reclamos ) {
-			System.out.println( r.getDescripcion() );
-		}*/
-		
 		
 		
 	}

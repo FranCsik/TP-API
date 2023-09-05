@@ -30,7 +30,6 @@ public class Unidad {
 	        joinColumns = { @JoinColumn(name = "identificador") }, 
 	        inverseJoinColumns = { @JoinColumn(name = "documento"), }
 	    )
-	//@JoinColumn(table="duenios", name="documento", referencedColumnName="documento")
 	private List<Persona> duenios;
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(
@@ -38,7 +37,6 @@ public class Unidad {
 	        joinColumns = { @JoinColumn(name = "identificador") }, 
 	        inverseJoinColumns = { @JoinColumn(name = "documento") }
 	    )
-	//@JoinColumn(table="inquilinos", name="documento", referencedColumnName="documento")
 	private List<Persona> inquilinos;
 	
 	public Unidad(int id, String piso, String numero, Edificio edificio) {
