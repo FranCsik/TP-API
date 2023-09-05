@@ -1,5 +1,7 @@
 package com.example.demo.model;
 
+import com.example.demo.views.ImagenView;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -16,6 +18,8 @@ public class Imagen {
 		this.direccion = direccion;
 		this.tipo = tipo;
 	}
+	
+	public Imagen() {}
 
 	public int getNumero() {
 		return numero;
@@ -39,5 +43,9 @@ public class Imagen {
 
 	public void setTipo(String tipo) {
 		this.tipo = tipo;
+	}
+	
+	public ImagenView toView() {
+		return new ImagenView( numero, direccion, tipo );  
 	}
 }

@@ -3,6 +3,9 @@ package com.example.demo.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.example.demo.views.ImagenView;
+import com.example.demo.views.ReclamoView;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -10,7 +13,8 @@ import jakarta.persistence.*;
 public class Reclamo {
 
 	@Id
-	@Column(name="idReclamo")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name="idreclamo")
 	private int numero;
 	
 
@@ -28,7 +32,7 @@ public class Reclamo {
 	private Unidad unidad;
 	//private Estado estado;
 	@OneToMany(fetch = FetchType.EAGER)
-	@JoinColumn(name="idReclamo")
+	@JoinColumn(name="idreclamo")
 	private List<Imagen> imagenes;
 	
 	public Reclamo(Persona usuario, Edificio edificio, String ubicacion, String descripcion, Unidad unidad) {
@@ -40,6 +44,8 @@ public class Reclamo {
 		//this.estado = Estado.nuevo;
 		imagenes = new ArrayList<Imagen>();
 	}
+	
+	public Reclamo() {}
 
 	public void agregarImagen(String direccion, String tipo) {
 		Imagen imagen = new Imagen(direccion, tipo);
@@ -85,5 +91,15 @@ public class Reclamo {
 	/*public void cambiarEstado(Estado estado) {
 		this.estado = estado;
 	}*/
+	
+	public ReclamoView toView() {
+		List<ImagenView> imagenesView = new ArrayList<ImagenView>();
+		for( Imagen im: imagenes ) {
+			imagenesView.add( im.toView() );
+		}
+		
+		return new ReclamoView(numero, usuario.toView(), edificio.toView(), ubicacion, descripcion, unidad.toView(), imagenesView);
+		
+	}
 
 }
