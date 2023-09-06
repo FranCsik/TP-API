@@ -2117,7 +2117,7 @@ INSERT [dbo].[unidades] ([identificador], [piso], [numero], [habitado], [codigoE
 INSERT [dbo].[unidades] ([identificador], [piso], [numero], [habitado], [codigoEdificio]) VALUES (1590, N'1', N'2', N'N', 9)
 INSERT [dbo].[unidades] ([identificador], [piso], [numero], [habitado], [codigoEdificio]) VALUES (1591, N'1', N'1', N'N', 9)
 go
-SET IDENTITY_INSERT [dbo].[unidades] ON
+SET IDENTITY_INSERT [dbo].[unidades] OFF
 go
 
 create table duenios(
@@ -3897,7 +3897,7 @@ INSERT duenios (id,identificador,documento) VALUES (1764, 1301, N'DNI30610075')
 INSERT duenios (id,identificador,documento) VALUES (1765, 1401, N'DNI30616697')
 INSERT duenios (id,identificador,documento) VALUES (1766, 1501, N'DNI30647320')
 go
-SET IDENTITY_INSERT [duenios] ON
+SET IDENTITY_INSERT duenios OFF
 go
 
 create table inquilinos(

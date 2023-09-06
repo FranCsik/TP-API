@@ -10,16 +10,19 @@ services:
     volumes:
       - ./backend:/app
   sql:
-    image: mysql:8.1.0
+    image: mcr.microsoft.com/mssql/server:2022-CU7-ubuntu-20.04
     environment:
-      MYSQL_ROOT_PASSWORD: 123456789
-      MYSQL_DATABASE: api
-      MYSQL_USER: api
-      MYSQL_PASSWORD: 123456789
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "Password123"
+      MSSQL_PID: "Developer"
+    ports:
+      - "1433:1433"
     expose:
-      - 3306
+      - 1433
     networks:
       - backend
+    # volumes:
+    #   - ./:/docker-entrypoint-initdb.d
   frontend:
     image: node:20.0.0
     working_dir: /app

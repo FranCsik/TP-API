@@ -234,7 +234,7 @@ public class Controlador {
 		}
 	}	
 	
-	private Persona buscarPersona(String documento) throws PersonaException {
+	public Persona buscarPersona(String documento) throws PersonaException {
 		Optional<Persona> p = personaRepository.findById( documento );
 		if (p.isPresent() ){
 			return p.get();
