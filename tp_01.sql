@@ -4337,6 +4337,7 @@ create table reclamos(
 	codigo int not null,
 	ubicacion varchar(300),
 	descripcion varchar(1000),
+	estado varchar(20),
 	identificador int,
 	constraint pk_reclamos primary key (idReclamo),
 	constraint fk_raclamo_persona foreign key (documento) references personas,

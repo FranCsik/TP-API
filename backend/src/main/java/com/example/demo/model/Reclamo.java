@@ -28,6 +28,7 @@ public class Reclamo {
 	@JoinColumn(name="codigo")
 	private Edificio edificio;
 	private String ubicacion;
+	@Column(length = 1000)
 	private String descripcion;
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name="identificador")
@@ -109,7 +110,7 @@ public class Reclamo {
 			unidadView = unidad.toView();
 		}
 		
-		return new ReclamoView(numero, usuario.toView(), edificio.toView(), ubicacion, descripcion, unidadView, imagenesView);
+		return new ReclamoView(numero, usuario.toView(), edificio.toView(), ubicacion, descripcion, unidadView, imagenesView, estado);
 		
 	}
 

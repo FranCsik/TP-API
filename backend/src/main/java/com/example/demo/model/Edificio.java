@@ -102,4 +102,6 @@ public class Edificio {
 	public EdificioView toView() {
 		return new EdificioView(codigo, nombre, direccion);
 	}
+
+	
 }

@@ -158,12 +158,11 @@ public class Controlador {
 	public List<ReclamoView> reclamosPorEdificio(int codigo){
 		Edificio ed = edificioRepository.findById( codigo ).get();
 		List<Reclamo> reclamos = reclamoRepository.findByEdificio(ed);
-		System.out.println(reclamos.size());
+		// System.out.println(reclamos.size());
 		List<ReclamoView> resultado = new ArrayList<ReclamoView>();
 		for( Reclamo r: reclamos ) {
 			resultado.add( r.toView() );
 		}
-		
 		return resultado;
 	}
 	
@@ -196,9 +195,31 @@ public class Controlador {
 		return resultado;
 	}
  
-	public int agregarReclamo(int codigoEdificio, int codigoUnidad, String piso, String numero, String documento, String ubicacion, String descripcion, Estado estado) throws EdificioException, UnidadException, PersonaException {
-		Edificio edificio = buscarEdificio(codigoEdificio);
-		Unidad unidad = buscarUnidad(codigoUnidad, piso, numero);
+	public int agregarReclamo(int codigoEdificio, Integer codigoUnidad, String piso, String numero, String documento, String ubicacion, String descripcion, Estado estado) throws EdificioException, UnidadException, PersonaException {
+		// Se debe hacer que el la unidad no exista, en ese caso se debera describir en ubicacion el lugar donde se encuentra el desperfecto
+		// Chequear que el reclamo lo haga el usuario valido 
+		// En caso de estar alquilada el inquilino puede hacer el reclamo
+		// En caso de ser una sala comun lo puede hacer cualquier persona
+		// En caso de no estar alquilada el propietario puede hacer el reclamo
+		Edificio edificio = null;
+		Unidad unidad = null;
+		try{
+			edificio = buscarEdificio(codigoEdificio);
+		}catch (EdificioException e){
+			throw new EdificioException("El edificio no existe");
+		}
+		if ( codigoUnidad != null && piso != null && numero != null ) {
+			try{
+				unidad = buscarUnidad(codigoUnidad, piso, numero);
+			}catch (UnidadException e){
+				throw new UnidadException("La unidad no existe");
+			}
+		}
+		try{
+			validarPersonaCorrecta(unidad, documento, ubicacion, edificio);
+		}catch (PersonaException e){
+			throw new PersonaException("La persona no tiene permisos para hacer el reclamo");
+		}
 		Persona persona = buscarPersona(documento);
 		Reclamo reclamo = new Reclamo(persona, edificio, ubicacion, descripcion, unidad, estado);
 		reclamoRepository.save(reclamo);
@@ -250,5 +271,31 @@ public class Controlador {
 		} else {
 			return null;
 		}
+	}
+
+	private void validarPersonaCorrecta(Unidad unidad, String documento, String ubicacion, Edificio edificio) throws PersonaException{
+		if (unidad == null){
+			Set<Persona> habilitados = edificio.habilitados();
+			for (Persona habilitado : habilitados) {
+				if (habilitado.getDocumento().equals(documento)) {
+					return;
+				}
+			}
+		}else{
+			if (unidad.getInquilinos().size() > 0){
+				for (Persona inquilino : unidad.getInquilinos()) {
+					if (inquilino.getDocumento().equals(documento)) {
+						return;
+					}
+			}
+			}else{
+				for (Persona duenio : unidad.getDuenios()) {
+					if (duenio.getDocumento().equals(documento)) {
+						return;
+					}
+				}
+			}
+		}
+		throw new PersonaException("La persona no tiene permisos para hacer el reclamo");
 	}
 }

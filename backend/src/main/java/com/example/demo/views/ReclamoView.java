@@ -10,11 +10,11 @@ public class ReclamoView {
 	private String ubicacion;
 	private String descripcion;
 	private UnidadView unidad;
-	//private Estado estado;
+	private Estado estado;
 	private List<ImagenView> imagenes;
 	
 	
-	public ReclamoView(int numero, PersonaView usuario, EdificioView edificio, String ubicacion, String descripcion, UnidadView unidad, List<ImagenView> imagenes) {
+	public ReclamoView(int numero, PersonaView usuario, EdificioView edificio, String ubicacion, String descripcion, UnidadView unidad, List<ImagenView> imagenes, Estado estado) {
 		this.numero = numero;
 		this.usuario = usuario;
 		this.edificio = edificio;
@@ -22,6 +22,7 @@ public class ReclamoView {
 		this.descripcion = descripcion;
 		this.unidad = unidad;
 		this.imagenes = imagenes;
+		this.estado = estado;
 	}
 
 	@Override
@@ -33,9 +34,6 @@ public class ReclamoView {
 		return numero;
 	}
 	
-	
-
-
 	public void setNumero(int numero) {
 		this.numero = numero;
 	}
@@ -75,6 +73,13 @@ public class ReclamoView {
 	public void setImagenes(List<ImagenView> imagenes) {
 		this.imagenes = imagenes;
 	}
-	
 
+	public Estado getEstado() {
+		return estado;
+	}
+
+	public void setEstado(Estado estado) {
+		this.estado = estado;
+	}
+	
 }
