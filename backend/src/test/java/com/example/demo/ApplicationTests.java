@@ -120,9 +120,6 @@ class ApplicationTests {
 		assert(reclamos.size() == 2);
 	}
 
-
-	//TODO: HACER RECLAMOS POR PERSONA Y ESTADO y solo por persona
-
 	@Test
 	void reclamosPorPersona(){
 		try {
@@ -138,7 +135,7 @@ class ApplicationTests {
 	void reclamosPorPersonaYEstado(){
 		try {
 			Integer reclamoUno = controlador.agregarReclamo(1, 1, "10", "6", "CI 13230978", "departamento en el piso 10 y numero 6", "Hubo un problema en el retrete", Estado.nuevo);
-			Integer reclamoDos = controlador.agregarReclamo(1, 1, "10", "6", "CI 13230978", "departamento en el piso 10 y numero 6", "Hubo un problema en la lampara", Estado.nuevo);
+			controlador.agregarReclamo(1, 1, "10", "6", "CI 13230978", "departamento en el piso 10 y numero 6", "Hubo un problema en la lampara", Estado.nuevo);
 			assert(controlador.reclamosPorEdificio(1).size() == 2);
 			assert(controlador.reclamosPorPersona("CI 13230978", Estado.nuevo).size() == 2);
 			controlador.cambiarEstado(reclamoUno, Estado.enProceso);
