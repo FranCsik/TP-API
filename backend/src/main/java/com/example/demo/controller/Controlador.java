@@ -167,11 +167,12 @@ public class Controlador {
 	}
 	
 	public List<ReclamoView> reclamosPorUnidad(int codigo, String piso, String numero) {
+		//TODO: Esto debe buscar por codigo de edificio, piso y numero de unidad
 		Unidad un = unidadRepository.findById( codigo ).get();
 		List<Reclamo> reclamos = reclamoRepository.findByUnidad(un);
 		List<ReclamoView> resultado = new ArrayList<ReclamoView>();
 		for( Reclamo r: reclamos ) {
-			resultado.add( r.toView() );
+			resultado.add( r.toView());
 		}
 		return resultado;
 	}
@@ -185,14 +186,25 @@ public class Controlador {
 		return resultado;
 	}
 	
-	public List<ReclamoView> reclamosPorPersona(String documento) {
-		Persona persona = personaRepository.findById( documento ).get();
-		List<Reclamo> reclamos = reclamoRepository.findByUsuario( persona );
-		List<ReclamoView> resultado = new ArrayList<ReclamoView>();
-		for( Reclamo r: reclamos ) {
-			resultado.add( r.toView() );
+	public List<ReclamoView> reclamosPorPersona(String documento, Estado estado) {
+		//TODO: Se debe poder filtrar por nuevos, cerrados, etc
+		if (estado != null){
+			Persona persona = personaRepository.findById( documento ).get();
+			List<Reclamo> reclamos = reclamoRepository.findByUsuarioAndEstado(persona, estado);
+			List<ReclamoView> resultado = new ArrayList<ReclamoView>();
+			for( Reclamo r: reclamos ) {
+				resultado.add( r.toView() );
+			}
+			return resultado;
+		}else{
+			Persona persona = personaRepository.findById( documento ).get();
+			List<Reclamo> reclamos = reclamoRepository.findByUsuario( persona );
+			List<ReclamoView> resultado = new ArrayList<ReclamoView>();
+			for( Reclamo r: reclamos ) {
+				resultado.add( r.toView() );
+			}
+			return resultado;
 		}
-		return resultado;
 	}
  
 	public int agregarReclamo(int codigoEdificio, Integer codigoUnidad, String piso, String numero, String documento, String ubicacion, String descripcion, Estado estado) throws EdificioException, UnidadException, PersonaException {
@@ -233,6 +245,7 @@ public class Controlador {
 	}
 	
 	public void cambiarEstado(int numero, Estado estado) throws ReclamoException {
+		//TODO: Dice anotar medidas tomadas, donde deberia de anotarse?
 		Reclamo reclamo = buscarReclamo(numero);
 		reclamo.cambiarEstado(estado);
 		reclamoRepository.save( reclamo );
@@ -297,5 +310,17 @@ public class Controlador {
 			}
 		}
 		throw new PersonaException("La persona no tiene permisos para hacer el reclamo");
+	}
+
+	private boolean login(String mail, String password){
+		//TODO: Se debe agregar capa de seguridad, y tirar un request con mail y contraseña?
+
+		Optional<Persona> persona = personaRepository.findByMail(mail);
+		if (persona.isPresent()){
+			if (persona.get().getPassword().equals(password)){
+				return true;
+			}
+		}
+		return false;
 	}
 }
