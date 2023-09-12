@@ -18,7 +18,7 @@ import com.example.demo.views.ReclamoView;
 
 
 @SpringBootTest
-@Transactional
+// @Transactional
 class ApplicationTests {
 	
 	@Autowired
