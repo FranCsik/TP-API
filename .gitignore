@@ -1,2 +1,4 @@
 node_modules
 .next
+
+/backend/src/main/resources/application.properties
