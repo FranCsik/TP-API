@@ -18,7 +18,11 @@ public class Edificio {
 	@OneToMany(fetch = FetchType.EAGER, mappedBy="edificio")
 	private List<Unidad> unidades;
 	
-	public Edificio(int codigo, String nombre, String direccion) {}
+	public Edificio(int codigo, String nombre, String direccion) {
+		this.codigo = codigo;
+		this.nombre = nombre;
+		this.direccion = direccion;
+	}
 	public Edificio() {}
 	
 	public void setCodigo(int codigo) {
