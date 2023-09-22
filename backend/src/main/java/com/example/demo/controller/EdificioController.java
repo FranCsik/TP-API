@@ -43,6 +43,20 @@ public class EdificioController {
         
     }
 
+	@PostMapping("/edificios/borrar")
+	public void borrarEdificio(@RequestBody Edificio edificio) {
+		edificioRepository.delete( edificio );
+	}
+
+	@GetMapping("/edificios/{codigo}")
+	public EdificioView getEdificio(@PathVariable int codigo) throws EdificioException{
+		Optional<Edificio> edificio = edificioRepository.findById( codigo );
+		if( edificio.isPresent() ) {
+			return edificio.get().toView();
+		}
+		throw new EdificioException("No existe el edificio con codigo " + codigo);
+	}
+
     @GetMapping("/edificios/{codigo}/unidades")
     public List<UnidadView> getUnidadesPorEdificio(@PathVariable int codigo) throws EdificioException{
 		List<UnidadView> resultado = new ArrayList<UnidadView>();
@@ -82,7 +96,7 @@ public class EdificioController {
         return resultado;
     }
     @GetMapping("/edificios/{codigo}/habitantes")
-	public List<PersonaView> habitantesPorEdificio(int codigo) throws EdificioException{
+	public List<PersonaView> habitantesPorEdificio(@PathVariable int codigo) throws EdificioException{
 		List<PersonaView> resultado = new ArrayList<PersonaView>();
 		Optional<Edificio> edificio = edificioRepository.findById( codigo );
 		if( edificio.isPresent() ){

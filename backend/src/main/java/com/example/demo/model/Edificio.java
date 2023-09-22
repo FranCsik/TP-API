@@ -12,6 +12,7 @@ import jakarta.persistence.*;
 @Table(name="edificios")
 public class Edificio {
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int codigo;
 	private String nombre;
 	private String direccion;

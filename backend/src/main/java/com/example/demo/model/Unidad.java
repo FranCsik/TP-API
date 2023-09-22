@@ -16,6 +16,7 @@ import jakarta.persistence.*;
 public class Unidad {
 	@Column(name="identificador")
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	private String piso;
 	private String numero;

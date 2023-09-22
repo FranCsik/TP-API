@@ -46,19 +46,48 @@ public class UnidadController {
 		return resultado;
 	}
 
-    @PostMapping("/unidades/codigo={codigo}&piso={piso}&numero={numero}/agregarDuenio")
-    public void transferirUnidad(@PathVariable int codigo, @PathVariable String piso, @PathVariable String numero, @RequestBody String documento) throws UnidadException, PersonaException {
+    @PostMapping("/unidades/codigo={codigo}&piso={piso}&numero={numero}/transferir")
+    public void transferirUnidad(@PathVariable int codigo, @PathVariable String piso, @PathVariable String numero, @RequestBody Persona persona) throws UnidadException, PersonaException {
 		Unidad unidad = buscarUnidad(codigo, piso, numero);
-		Persona persona = buscarPersona(documento);
 		unidad.transferir(persona);
 		unidadRepository.save(unidad);
-		
 	}
 
+	@PostMapping("/unidades/codigo={codigo}&piso={piso}&numero={numero}/agregarDuenio")
+	public void agregarDuenioUnidad(@PathVariable int codigo, @PathVariable String piso, @PathVariable String numero, @RequestBody Persona persona) throws UnidadException, PersonaException {
+		Unidad unidad = buscarUnidad(codigo, piso, numero);
+		unidad.agregarDuenio(persona);
+		unidadRepository.save(unidad);
+	}
 
+	@PostMapping("/unidades/codigo={codigo}&piso={piso}&numero={numero}/alquilar")
+	public void alquilarUnidad(@PathVariable int codigo, @PathVariable String piso, @PathVariable String numero, @RequestBody Persona persona) throws UnidadException, PersonaException{
+		Unidad unidad = buscarUnidad(codigo, piso, numero);
+		System.out.println( "Unidad: " + unidad.getId() );
+		unidad.alquilar(persona);
+		unidadRepository.save(unidad);
+	}
 
-    //AGREGAR METODOS QUE FALTAN
+	@PostMapping("/unidades/codigo={codigo}&piso={piso}&numero={numero}/agregarInquilino")
+	public void agregarInquilinoUnidad(@PathVariable int codigo, @PathVariable String piso, @PathVariable String numero, @RequestBody Persona persona) throws UnidadException, PersonaException{
+		Unidad unidad = buscarUnidad(codigo, piso, numero);
+		unidad.agregarInquilino(persona);
+		unidadRepository.save(unidad);
+	}
 
+	@PostMapping("/unidades/codigo={codigo}&piso={piso}&numero={numero}/liberar")
+	public void liberarUnidad(@PathVariable int codigo, @PathVariable String piso, @PathVariable String numero) throws UnidadException {
+		Unidad unidad = buscarUnidad(codigo, piso, numero);
+		unidad.liberar();
+		unidadRepository.save(unidad);
+	}
+
+	@PostMapping("/unidades/codigo={codigo}&piso={piso}&numero={numero}/habitar")
+	public void habitarUnidad(@PathVariable int codigo, @PathVariable String piso, @PathVariable String numero) throws UnidadException {
+		Unidad unidad = buscarUnidad(codigo, piso, numero);
+		unidad.habitar();
+		unidadRepository.save(unidad);
+	}
 
 
     private Unidad buscarUnidad(int codigo, String piso, String numero) throws UnidadException{
