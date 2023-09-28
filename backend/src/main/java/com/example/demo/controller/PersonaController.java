@@ -24,7 +24,7 @@ public class PersonaController {
 	ReclamoRepository reclamoRepository;
 
     @PostMapping("/personas/crear")
-    public void agregarPersona(@RequestBody Persona persona) {
+    public void crearPersona(@RequestBody Persona persona) {
 		personaRepository.save(persona);
 	}
 
@@ -33,12 +33,21 @@ public class PersonaController {
 		personaRepository.delete(persona);
 	}
 
+	//Este metodo sirve para cambiar los datos y la contrasenia de una persona
+	//NO FUNCIONA CORRECTAMENTE
 	@PostMapping("/personas/modificar")
 	public void modificarPersona(@RequestBody Persona persona) {
 		personaRepository.save(persona);
 	}
 
-    
-    
+
+	public Persona buscarPersona(String documento) throws PersonaException {
+		Optional<Persona> p = personaRepository.findById( documento );
+		if (p.isPresent() ){
+			return p.get();
+		} else {
+			return null;
+		}
+	}
 
 }
