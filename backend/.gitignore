@@ -38,3 +38,5 @@ out/
 
 ## Configuracion BD
 backend/src/main/resources/application.properties
+*.properties
+.properties
