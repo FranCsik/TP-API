@@ -18,7 +18,7 @@ import com.example.demo.views.ReclamoView;
 
 
 @SpringBootTest
-// @Transactional
+@Transactional
 class ApplicationTests {
 	
 	@Autowired
@@ -45,7 +45,7 @@ class ApplicationTests {
 			controlador.agregarReclamo(1, 1, "10", "6", "CPA3449614", "departamento en el piso 10 y numero 6", "Hubo un problema en el retrete", Estado.nuevo);
 		} catch (EdificioException | UnidadException | PersonaException e) {
 			assert(e.getMessage().equals("La persona no tiene permisos para hacer el reclamo"));
-			e.printStackTrace();
+			// e.printStackTrace();
 		}
 	}
 
@@ -56,7 +56,7 @@ class ApplicationTests {
 			assert(controlador.reclamosPorEdificio(1).size() == 1);
 		} catch (EdificioException | UnidadException | PersonaException e) {
 			assert(e.getMessage().equals("La persona no tiene permisos para hacer el reclamo"));
-			e.printStackTrace();
+			// e.printStackTrace();
 		}
 	}
 
@@ -66,7 +66,7 @@ class ApplicationTests {
 			controlador.agregarReclamo(1, null, null, null, "DNI30868066", "Hall", "Se rompio la lampara del hall", Estado.nuevo);
 		} catch (EdificioException | UnidadException | PersonaException e) {
 			assert(e.getMessage().equals("La persona no tiene permisos para hacer el reclamo"));
-			e.printStackTrace();
+			// e.printStackTrace();
 		}
 	}
 
@@ -101,7 +101,7 @@ class ApplicationTests {
 		try {
 			controlador.agregarReclamo(3, 239, "26", "5", "DNI31333789", "departamento en el piso 10 y numero 6", "Hubo un problema en la cama", Estado.nuevo);
 		} catch (EdificioException | UnidadException | PersonaException e) {
-			e.printStackTrace();
+			// e.printStackTrace();
 			assert(e.getMessage().equals("La persona no tiene permisos para hacer el reclamo"));
 		}
 
