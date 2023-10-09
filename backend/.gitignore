@@ -40,3 +40,7 @@ out/
 backend/src/main/resources/application.properties
 *.properties
 .properties
+
+# Ignorar el archivo application.properties
+application.properties
+
