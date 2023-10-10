@@ -3,9 +3,6 @@ package com.example.demo.controller;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-
-import javax.swing.text.html.Option;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +14,8 @@ import com.example.demo.exceptions.*;
 
 @RestController
 public class ReclamosController {
+	@Autowired
+	Controlador controlador;
     @Autowired
 	EdificioRepository edificioRepository;
 	@Autowired
@@ -25,6 +24,15 @@ public class ReclamosController {
 	UnidadRepository unidadRepository;
 	@Autowired
 	ReclamoRepository reclamoRepository;
+
+	@GetMapping("/reclamos")
+	public List<ReclamoView> getReclamos(){
+		List<ReclamoView> resultado = new ArrayList<ReclamoView>();
+		for (Reclamo r: controlador.tomarReclamos()){
+			resultado.add(r.toView());
+		}
+		return resultado;
+	}
 
     @GetMapping("/reclamos/edificio/{codigo}")
     public List<ReclamoView> reclamosPorEdificio(@PathVariable int codigo){
@@ -163,7 +171,7 @@ public class ReclamosController {
 
 	private void validarPersonaCorrecta(Unidad unidad, String documento, String ubicacion, Edificio edificio) throws PersonaException{
 		if (unidad == null){
-			Set<Persona> habilitados = edificio.habilitados();
+			List<Persona> habilitados = edificio.habilitados();
 			for (Persona habilitado : habilitados) {
 				if (habilitado.getDocumento().equals(documento)) {
 					return;

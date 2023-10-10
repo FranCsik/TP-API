@@ -1,5 +1,7 @@
 package com.example.demo.views;
 
+import com.example.demo.model.Edificio;
+
 public class EdificioView {
 
 	private int codigo;
@@ -40,5 +42,9 @@ public class EdificioView {
 	
 	public String toString() {
 		return codigo + " " + nombre; 
+	}
+
+	public Edificio toModel() {
+		return new Edificio(codigo, nombre, direccion);
 	}
 }

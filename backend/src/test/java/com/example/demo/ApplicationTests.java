@@ -84,7 +84,7 @@ class ApplicationTests {
 
 	@Test 
 	void cambiarEstadoDeReclamo(){
-		// Se debe poder cambiar el estado de un reclamo, indicando cuales fueron las medidas tomadas.
+		// Se debe poder cambiar el Estado de un reclamo, indicando cuales fueron las medidas tomadas.
 		// Posibles estados de los reclamos son: Nuevo, abierto, en proceso, desestimado, anulado y terminado.
 		try {
 			Integer numeroDeReclamo = controlador.agregarReclamo(1, 1, "10", "6", "CI 13230978", "departamento en el piso 10 y numero 6", "Hubo un problema en el retrete", Estado.nuevo);
@@ -185,7 +185,7 @@ class ApplicationTests {
 
 	@Test
 	void consultarReclamosPorEdificio(){
-		// Se debe poder consultar reclamos por edificio y su estado
+		// Se debe poder consultar reclamos por edificio y su Estado
 
 	}
 

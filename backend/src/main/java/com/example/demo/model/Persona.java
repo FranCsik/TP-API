@@ -1,5 +1,6 @@
 package com.example.demo.model;
 
+import com.example.demo.views.PersonaCreateView;
 import com.example.demo.views.PersonaView;
 
 import jakarta.persistence.*;
@@ -14,6 +15,13 @@ public class Persona {
 	private String mail;
 	@Column(name="contrasenia")
 	private String password;
+
+	public Persona(String documento, String nombre, String mail, String password) {
+		this.documento = documento;
+		this.nombre = nombre;
+		this.mail = mail;
+		this.password = password;
+	}
 	
 	public Persona() {}
 
@@ -55,5 +63,9 @@ public class Persona {
 
 	public PersonaView toView() {
 		return new PersonaView(documento, nombre);
+	}
+
+	public PersonaCreateView toCreateView() {
+		return new PersonaCreateView(documento, nombre, password, mail);
 	}
 }
