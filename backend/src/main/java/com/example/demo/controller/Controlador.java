@@ -313,4 +313,15 @@ public class Controlador {
 	public List<Reclamo> tomarReclamos(){
 		return reclamoRepository.findAll();
 	}
+
+	public Edificio modificarEdificio(Edificio edificio, EdificioView actualizacion) throws EdificioException {
+		try{
+			edificio.setNombre(actualizacion.getNombre());
+			edificio.setDireccion(actualizacion.getDireccion());
+			edificioRepository.save(edificio);
+		}catch (Exception e){
+			throw new EdificioException("No se pudo actualizar el edificio");
+		}
+		return edificio;
+	}
 }

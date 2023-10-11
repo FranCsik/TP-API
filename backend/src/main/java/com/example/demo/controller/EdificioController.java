@@ -105,5 +105,11 @@ public class EdificioController {
 		return resultado;
 	}
 
+	@PatchMapping("/edificios/{codigo}")
+	public EdificioView modificarEdificio(@PathVariable int codigo, @RequestBody EdificioView actualizacion) throws EdificioException{
+		Edificio edificio = controlador.buscarEdificio(codigo);
+		Edificio edificioActualizado = controlador.modificarEdificio(edificio, actualizacion);
+		return edificioActualizado.toView();
+	}
 
 }
