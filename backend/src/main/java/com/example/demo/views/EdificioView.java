@@ -45,6 +45,6 @@ public class EdificioView {
 	}
 
 	public Edificio toModel() {
-		return new Edificio(codigo, nombre, direccion);
+		return new Edificio(nombre, direccion);
 	}
 }

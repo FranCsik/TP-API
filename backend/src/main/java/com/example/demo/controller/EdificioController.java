@@ -24,6 +24,8 @@ public class EdificioController {
 	UnidadRepository unidadRepository;
 	@Autowired
 	ReclamoRepository reclamoRepository;
+	@Autowired
+	AdministradorRepository administradorRepository;
 
     @GetMapping("/edificios")
     public List<EdificioView> getEdificios(){
@@ -41,9 +43,12 @@ public class EdificioController {
     }
 
 	@DeleteMapping("/edificios/{codigo}")
-	public void borrarEdificio(@RequestBody int codigo) {
+	public void borrarEdificio(@PathVariable int codigo) {
 		try{
 			Edificio edificio = controlador.buscarEdificio(codigo);
+			if (edificio == null){
+				throw new EdificioException("No existe el edificio");
+			};
 			controlador.eliminarEdificio(edificio);
 		}catch (EdificioException e){
 			e.printStackTrace();
@@ -51,9 +56,17 @@ public class EdificioController {
 	}
 
 	@GetMapping("/edificios/{codigo}")
-	public EdificioView getEdificio(@PathVariable int codigo) throws EdificioException{
-		Edificio edificio = controlador.buscarEdificio(codigo);
-		return edificio.toView();
+	public EdificioView getEdificio(@PathVariable int codigo){
+		try{
+			Edificio edificio = controlador.buscarEdificio(codigo);
+			if (edificio == null){
+				throw new EdificioException("No existe el edificio");
+			};
+			return edificio.toView();
+		}catch (EdificioException e){
+			e.printStackTrace();
+			return null;
+		}
 	}
 
     @GetMapping("/edificios/{codigo}/unidades")
@@ -105,7 +118,7 @@ public class EdificioController {
 		return resultado;
 	}
 
-	@PatchMapping("/edificios/{codigo}")
+	@PutMapping("/edificios/{codigo}")
 	public EdificioView modificarEdificio(@PathVariable int codigo, @RequestBody EdificioView actualizacion) throws EdificioException{
 		Edificio edificio = controlador.buscarEdificio(codigo);
 		Edificio edificioActualizado = controlador.modificarEdificio(edificio, actualizacion);

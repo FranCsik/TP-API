@@ -7,7 +7,7 @@ import java.util.List;
 import org.hibernate.type.YesNoConverter;
 
 import com.example.demo.exceptions.UnidadException;
-import com.example.demo.views.EdificioView;
+import com.example.demo.views.PersonaView;
 import com.example.demo.views.UnidadView;
 
 import jakarta.persistence.*;
@@ -40,8 +40,7 @@ public class Unidad {
 	    )
 	private List<Persona> inquilinos;
 	
-	public Unidad(int id, String piso, String numero, Edificio edificio) {
-		this.id = id;
+	public Unidad( String piso, String numero, Edificio edificio) {
 		this.piso = piso;
 		this.numero = numero;
 		this.habitado = false;
@@ -52,26 +51,28 @@ public class Unidad {
 	
 	public Unidad() {}
 
-	public void transferir(Persona nuevoDuenio) {
-		duenios = new ArrayList<Persona>();
-		duenios.add(nuevoDuenio);
+	public void transferir(List<Persona> nuevosDuenios) {
+		duenios = nuevosDuenios;
 	}
 	
 	public void agregarDuenio(Persona duenio) {
 		duenios.add(duenio);
 	}
 	
-	public void alquilar(Persona inquilino) throws UnidadException {
+	public void alquilar(List<Persona> inquilinos) throws UnidadException {
 		if(!this.habitado) {
 			this.habitado = true;
-			inquilinos = new ArrayList<Persona>();
-			inquilinos.add(inquilino);
+			for (Persona inquilino : inquilinos)
+				this.inquilinos.add(inquilino);
 		}
 		else
 			throw new UnidadException("La unidad esta ocupada");
 	}
 
-	public void agregarInquilino(Persona inquilino) {
+	public void agregarInquilino(Persona inquilino) throws UnidadException{
+		if(!this.habitado){
+			throw new UnidadException("La unidad no esta alquilada");
+		}
 		inquilinos.add(inquilino);
 	}
 	
@@ -117,7 +118,15 @@ public class Unidad {
 	}
 
 	public UnidadView toView() {
-		EdificioView auxEdificio = edificio.toView();
-		return new UnidadView(id, piso, numero, habitado, auxEdificio);
+		// EdificioView auxEdificio = edificio.toView();
+		List<PersonaView> inquilinosView = new ArrayList<PersonaView>();
+		List<PersonaView> dueniosView = new ArrayList<PersonaView>();
+		for(Persona inquilino : this.inquilinos) {
+			inquilinosView.add(inquilino.toView());
+		}
+		for(Persona duenio : this.duenios) {
+			dueniosView.add(duenio.toView());
+		}
+		return new UnidadView(piso, numero, habitado, edificio.toView(), inquilinosView, dueniosView);
 	}
 }

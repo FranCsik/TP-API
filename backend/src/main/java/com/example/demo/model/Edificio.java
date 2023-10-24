@@ -20,10 +20,10 @@ public class Edificio {
 	@OneToMany(fetch = FetchType.EAGER, mappedBy="edificio")
 	private List<Unidad> unidades;
 	
-	public Edificio(int codigo, String nombre, String direccion) {
-		this.codigo = codigo;
+	public Edificio( String nombre, String direccion) {
 		this.nombre = nombre;
 		this.direccion = direccion;
+		this.unidades = new ArrayList<Unidad>();
 	}
 	public Edificio() {}
 	
@@ -43,7 +43,6 @@ public class Edificio {
 		this.unidades = unidades;
 	}
 
-	
 	public void agregarUnidad(Unidad unidad) {
 		unidades.add(unidad);
 	}
@@ -107,7 +106,5 @@ public class Edificio {
 
 	public EdificioView toView() {
 		return new EdificioView(codigo, nombre, direccion);
-	}
-
-	
+	}	
 }

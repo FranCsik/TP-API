@@ -22,6 +22,8 @@ public class PersonaController {
 	UnidadRepository unidadRepository;
 	@Autowired
 	ReclamoRepository reclamoRepository;
+	@Autowired
+	AdministradorRepository administradorRepository;
 
     @PostMapping("/personas")
     public PersonaView crearPersona(@RequestBody PersonaCreateView PersonaCreateView) {
@@ -45,10 +47,10 @@ public class PersonaController {
 	} 
 
 	@GetMapping("/personas/{documento}")
-	public PersonaView getPersona(@PathVariable String documento) {
+	public PersonaCreateView getPersona(@PathVariable String documento) {
 		try{
 			Persona persona = controlador.buscarPersona(documento);
-			return persona.toView();
+			return persona.toCreateView();
 		} catch (PersonaException e) {
 			e.printStackTrace();
 			return null;

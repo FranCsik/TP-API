@@ -22,6 +22,8 @@ public class Controlador {
 	UnidadRepository unidadRepository;
 	@Autowired
 	ReclamoRepository reclamoRepository;
+	@Autowired
+	AdministradorRepository administradorRepository;
 
 	
 	public List<Edificio> getEdificios(){
@@ -64,10 +66,10 @@ public class Controlador {
 		return resultado;
 	}
 	
-	public void transferirUnidad(int codigo, String piso, String numero, String documento) throws UnidadException, PersonaException {
+	public void transferirUnidad(int codigo, String piso, String numero, List<DocumentoView> documentos) throws UnidadException, PersonaException {
 		Unidad unidad = buscarUnidad(codigo, piso, numero);
-		Persona persona = buscarPersona(documento);
-		unidad.transferir(persona);
+		List<Persona> personas = buscarPersonas(documentos);
+		unidad.transferir(personas);
 		unidadRepository.save(unidad);
 		
 	}
@@ -79,11 +81,10 @@ public class Controlador {
 		unidadRepository.save(unidad);
 	}
 
-	public void alquilarUnidad(int codigo, String piso, String numero, String documento) throws UnidadException, PersonaException{
+	public void alquilarUnidad(int codigo, String piso, String numero, List<DocumentoView> documentos) throws UnidadException, PersonaException{
 		Unidad unidad = buscarUnidad(codigo, piso, numero);
-		System.out.println( "Unidad: " + unidad.getId() );
-		Persona persona = buscarPersona(documento);
-		unidad.alquilar(persona);
+		List<Persona> personas = buscarPersonas(documentos);
+		unidad.alquilar(personas);
 		unidadRepository.save(unidad);
 	}
 
@@ -228,12 +229,19 @@ public class Controlador {
 		return null;
 	}
 
-	private Unidad buscarUnidad(int codigo, String piso, String numero) throws UnidadException{
-		Optional<Unidad> u = unidadRepository.findByIdAndPisoAndNumero(codigo, piso, numero);
+	public Unidad buscarUnidad(int codigo, String piso, String numero) throws UnidadException{
+		Edificio edificio = null;
+		Optional<Edificio> edificioOptional = edificioRepository.findById( codigo );
+		if( edificioOptional.isPresent() ) {
+			edificio = edificioOptional.get();
+		} else {
+			throw new UnidadException("El edificio no existe");
+		}
+		Optional<Unidad> u = unidadRepository.findByEdificioAndPisoAndNumero(edificio, piso, numero);
 		if (u.isPresent() ){
 			return u.get();
 		} else {
-			return null;
+			throw new UnidadException("La unidad no existe");
 		}
 	}	
 	
@@ -323,5 +331,49 @@ public class Controlador {
 			throw new EdificioException("No se pudo actualizar el edificio");
 		}
 		return edificio;
+	}
+
+	public Administrador agregarAdministrador(Persona persona){
+		Administrador administrador = new Administrador(persona);
+		administradorRepository.save(administrador);
+		return administrador;
+	}
+
+	public void eliminarAdministrador(Administrador administrador){
+		administradorRepository.delete( administrador );
+	}
+
+	public Administrador buscarAdministrador(String documento){
+		try{
+			Persona persona = buscarPersona(documento);
+			Administrador administrador = administradorRepository.findByPersona(persona);
+			return administrador;
+		}catch (Exception e){
+
+		}
+		return null;
+	}
+
+	public List<Administrador> tomarAdministradores(){
+		return administradorRepository.findAll();
+	}
+
+	public List<PersonaView> devolverListaPersonasView(List<Persona> personas){
+		List<PersonaView> resultado = new ArrayList<PersonaView>();
+		for(Persona persona : personas)
+			resultado.add(persona.toView());
+		return resultado;
+	}
+
+	public List<Persona> buscarPersonas(List<DocumentoView> documentos) throws PersonaException{
+		List<Persona> resultado = new ArrayList<Persona>();
+		for(DocumentoView documento : documentos){
+			Persona persona = buscarPersona(documento.getDocumento());
+			if (persona == null){
+				throw new PersonaException("No se encontro la persona");
+			}
+			resultado.add(persona);
+		}
+		return resultado;
 	}
 }

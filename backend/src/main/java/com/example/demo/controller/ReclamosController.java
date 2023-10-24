@@ -24,6 +24,8 @@ public class ReclamosController {
 	UnidadRepository unidadRepository;
 	@Autowired
 	ReclamoRepository reclamoRepository;
+	@Autowired
+	AdministradorRepository administradorRepository;
 
 	@GetMapping("/reclamos")
 	public List<ReclamoView> getReclamos(){
@@ -112,7 +114,7 @@ public class ReclamosController {
 		//Si el usuario ingreso una unidad, chequeamos que exista
 		if( unidad != null){
 			if ( unidad.getPiso() != null && unidad.getNumero() != null ) {
-				unidad = buscarUnidad( unidad.getId(), unidad.getPiso(), unidad.getNumero() );
+				unidad = controlador.buscarUnidad( unidad.getId(), unidad.getPiso(), unidad.getNumero() );
 				//Si no se encuentra la unidad, tiramos un error
 				if( unidad == null ) {
 					throw new UnidadException("La unidad no existe");
@@ -159,15 +161,6 @@ public class ReclamosController {
 		}
 		return null;
 	}
-
-	private Unidad buscarUnidad(int codigo, String piso, String numero) throws UnidadException{
-		Optional<Unidad> u = unidadRepository.findByIdAndPisoAndNumero(codigo, piso, numero);
-		if (u.isPresent() ){
-			return u.get();
-		} else {
-			return null;
-		}
-	}	
 
 	private void validarPersonaCorrecta(Unidad unidad, String documento, String ubicacion, Edificio edificio) throws PersonaException{
 		if (unidad == null){

@@ -2,7 +2,7 @@ create table edificios(
 	codigo int not null identity,
 	nombre varchar(100) not null,
 	direccion varchar(100) not null,
-	constraint pk_edificios primary key (codigo)
+	constraint pk_edificios primary key (codigo) ON DELETE CASCADE;
 )
 
 insert into edificios (nombre, direccion) values ('SLS Puerto Madero','Mogliani 425')
@@ -520,7 +520,7 @@ create table unidades(
 	habitado varchar(1) not null default '',
 	codigoEdificio int,
 	constraint pk_unidades primary key (identificador),
-	constraint fk_unidades_edificios foreign key (codigoEdificio) references edificios
+	constraint fk_unidades_edificios foreign key (codigoEdificio) references edificios ON DELETE CASCADE
 )
 go
 SET IDENTITY_INSERT [dbo].[unidades] ON 
@@ -4353,3 +4353,7 @@ create table imagenes(
 	constraint fk_imagenes_reclamo foreign key (idReclamo) references reclamos
 )
 
+create table administradores(
+	id int not null identity,
+	documento varchar(20) not null,
+)
