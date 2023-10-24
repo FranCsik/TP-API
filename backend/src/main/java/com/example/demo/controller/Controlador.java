@@ -66,45 +66,49 @@ public class Controlador {
 		return resultado;
 	}
 	
-	public void transferirUnidad(int codigo, String piso, String numero, List<DocumentoView> documentos) throws UnidadException, PersonaException {
-		Unidad unidad = buscarUnidad(codigo, piso, numero);
-		List<Persona> personas = buscarPersonas(documentos);
-		unidad.transferir(personas);
+	public Unidad transferirUnidad(Unidad unidad, List<Persona> nuevosDuenios) throws UnidadException, PersonaException {
+		unidad.transferir(nuevosDuenios);
 		unidadRepository.save(unidad);
-		
+		return unidad;
 	}
 
-	public void agregarDuenioUnidad(int codigo, String piso, String numero, String documento) throws UnidadException, PersonaException {
-		Unidad unidad = buscarUnidad(codigo, piso, numero);
-		Persona persona = buscarPersona(documento);
+	public Unidad agregarUnidad(Unidad unidad) throws UnidadException{
+		unidadRepository.save(unidad);
+		return unidad;
+	}
+
+	public Unidad agregarDuenioUnidad(Unidad unidad, Persona persona) throws UnidadException, PersonaException {
 		unidad.agregarDuenio(persona);
 		unidadRepository.save(unidad);
+		return unidad;
 	}
 
-	public void alquilarUnidad(int codigo, String piso, String numero, List<DocumentoView> documentos) throws UnidadException, PersonaException{
-		Unidad unidad = buscarUnidad(codigo, piso, numero);
-		List<Persona> personas = buscarPersonas(documentos);
+	public Unidad alquilarUnidad(Unidad unidad, List<DocumentoView> documentos) throws UnidadException, PersonaException{
+		List<Persona> personas = new ArrayList<Persona>();
+		if (documentos != null){
+			personas = buscarPersonas(documentos);
+		}
 		unidad.alquilar(personas);
 		unidadRepository.save(unidad);
+		return unidad;
 	}
 
-	public void agregarInquilinoUnidad(int codigo, String piso, String numero, String documento) throws UnidadException, PersonaException{
-		Unidad unidad = buscarUnidad(codigo, piso, numero);
-		Persona persona = buscarPersona(documento);
-		unidad.agregarInquilino(persona);
+	public Unidad agregarInquilinoUnidad(Unidad unidad, Persona inquilino) throws UnidadException, PersonaException{
+		unidad.agregarInquilino(inquilino);
 		unidadRepository.save(unidad);
+		return unidad;
 	}
 
-	public void liberarUnidad(int codigo, String piso, String numero) throws UnidadException {
-		Unidad unidad = buscarUnidad(codigo, piso, numero);
+	public Unidad liberarUnidad(Unidad unidad) throws UnidadException {
 		unidad.liberar();
 		unidadRepository.save(unidad);
+		return unidad;
 	}
 	
-	public void habitarUnidad(int codigo, String piso, String numero) throws UnidadException {
-		Unidad unidad = buscarUnidad(codigo, piso, numero);
+	public Unidad habitarUnidad(Unidad unidad) throws UnidadException {
 		unidad.habitar();
 		unidadRepository.save(unidad);
+		return unidad;
 	}
 	
 	public Persona agregarPersona(Persona persona) throws PersonaException{
@@ -375,5 +379,9 @@ public class Controlador {
 			resultado.add(persona);
 		}
 		return resultado;
+	}
+
+	public void eliminarUnidad(Unidad unidad){
+		unidadRepository.delete( unidad );
 	}
 }
