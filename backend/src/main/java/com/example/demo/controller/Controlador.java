@@ -1,4 +1,7 @@
 package com.example.demo.controller;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -6,11 +9,16 @@ import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.example.demo.model.*;
 import com.example.demo.views.*;
 import com.example.demo.dao.*;
 import com.example.demo.exceptions.*;
+
+
 
 @Controller
 public class Controlador {
@@ -323,4 +331,68 @@ public class Controlador {
 		}
 		return false;
 	}
+
+	//Sobre el manejo de imagenes
+
+	//Hay que tener una carpeta llamada "imagenes" en el escritorio, cuando se quiera agregar una imagen
+	//a un reclamo, se va a crear una carpeta con el nombre del id del reclamo, y ahí se van a 
+	//ir guardardando las imagenes correspondientes a cierto reclamo.
+	public String guardarImagen(int reclamoId, MultipartFile file) throws Exception {
+	    // Verificar si el reclamo existe
+	    Reclamo reclamo = buscarReclamo(reclamoId);
+	    if (reclamo == null) {
+	        System.out.println("No se encontró el reclamo con ID: " + reclamoId);
+	        // Puedes lanzar una excepción aquí si lo consideras necesario
+	        throw new Exception("No se encontró el reclamo con ID: " + reclamoId);
+	    }
+
+	    try {
+	    	// Obtener nombre de archivo, tipo y construir la ruta con carpeta del reclamo
+	        String nombreArchivo = obtenerNombreDeArchivo(file);
+	        String carpetaReclamo = "C:/Users/Usuario/Desktop/imagenes/" + reclamoId + "/";
+	        String imagePath = carpetaReclamo + nombreArchivo;
+	        String tipo = obtenerTipoDeImagen(file);
+
+	        // Crear la carpeta del reclamo si no existe
+	        File carpetaReclamoFile = new File(carpetaReclamo);
+	        if (!carpetaReclamoFile.exists()) {
+	            carpetaReclamoFile.mkdirs();
+	        }
+
+	        // Guardar la imagen en disco
+	        try (FileOutputStream fos = new FileOutputStream(imagePath)) {
+	            fos.write(file.getBytes());
+	        }
+
+	        // Actualizar la entidad Reclamo con la nueva ruta
+	        Imagen imagen = new Imagen(imagePath, tipo);
+	        reclamo.setImagen(imagen); // Asumiendo que Reclamo tiene un método para agregar imágenes
+	        reclamoRepository.save(reclamo);
+
+	        return imagePath;
+	    } catch (IOException e) {
+	        System.out.println("Error al guardar la imagen: " + e.getMessage());
+	        throw new ReclamoException("Error al guardar la imagen", e);
+	    }
+	}
+	
+	public String obtenerNombreDeArchivo(MultipartFile file) {
+        // Obtener el nombre original del archivo
+        return file.getOriginalFilename();
+    }
+	
+	public String obtenerTipoDeImagen(MultipartFile imagen) {
+        // Obtener el nombre original del archivo
+        String nombreOriginal = imagen.getOriginalFilename();
+
+        // Verificar si el nombre original no es nulo y tiene una extensión
+        if (nombreOriginal != null && nombreOriginal.contains(".")) {
+            // Obtener la extensión del archivo
+            String tipo = nombreOriginal.substring(nombreOriginal.lastIndexOf('.') + 1).toLowerCase();
+            return tipo;
+        } else {
+            // No se encontró una extensión válida
+            return "Desconocido";
+        }
+    }
 }

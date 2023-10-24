@@ -88,6 +88,10 @@ public class Reclamo {
 		return estado;
 	}
 	
+	public void setImagen(Imagen imagen) {
+		this.imagenes.add(imagen);
+	}
+	
 	public List<Imagen> getImagenes(){
 		return this.imagenes;
 	}
