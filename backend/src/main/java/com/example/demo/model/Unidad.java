@@ -75,6 +75,10 @@ public class Unidad {
 		}
 		inquilinos.add(inquilino);
 	}
+
+	public void deshabitar(){
+		this.habitado = false;
+	}
 	
 	public boolean estaHabitado() {
 		return habitado;
@@ -117,6 +121,8 @@ public class Unidad {
 		return inquilinos;
 	}
 
+	
+
 	public UnidadView toView() {
 		// EdificioView auxEdificio = edificio.toView();
 		List<PersonaView> inquilinosView = new ArrayList<PersonaView>();
@@ -128,5 +134,37 @@ public class Unidad {
 			dueniosView.add(duenio.toView());
 		}
 		return new UnidadView(piso, numero, habitado, edificio.toView(), inquilinosView, dueniosView);
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public void setPiso(String piso) {
+		this.piso = piso;
+	}
+
+	public void setNumero(String numero) {
+		this.numero = numero;
+	}
+
+	public boolean isHabitado() {
+		return habitado;
+	}
+
+	public void setHabitado(boolean habitado) {
+		this.habitado = habitado;
+	}
+
+	public void setEdificio(Edificio edificio) {
+		this.edificio = edificio;
+	}
+
+	public void setDuenios(List<Persona> duenios) {
+		this.duenios = duenios;
+	}
+
+	public void setInquilinos(List<Persona> inquilinos) {
+		this.inquilinos = inquilinos;
 	}
 }

@@ -42,8 +42,18 @@ public class UnidadController {
 	}
 
 	@PostMapping("/unidades")
-	public UnidadView createUnidad(@RequestBody UnidadView unidad) throws UnidadException{
-		return controlador.agregarUnidad(new Unidad(unidad.getPiso(), unidad.getNumero(), unidad.getEdificio().toModel())).toView();
+	public UnidadView createUnidad(@RequestBody UnidadInputView unidad) throws UnidadException, EdificioException{
+		return controlador.agregarUnidad(new Unidad(unidad.getPiso(), unidad.getNumero(), controlador.buscarEdificio(unidad.getCodigoEdificio()))).toView();
+	}
+
+	@PutMapping("/unidades/codigo={codigo}&piso={piso}&numero={numero}")
+	public UnidadView updateUnidad(@PathVariable int codigo, @PathVariable String piso, @PathVariable String numero, @RequestBody UnidadInputView unidad) throws UnidadException, EdificioException{
+		return controlador.modificarUnidad(controlador.buscarUnidad(codigo, piso, numero), unidad).toView();
+	}
+
+	@GetMapping("/unidades/codigo={codigo}&piso={piso}&numero={numero}/reclamos")
+	public List<ReclamoView> reclamosPorUnidad(@PathVariable int codigo, @PathVariable String piso, @PathVariable String numero) throws UnidadException{
+		return controlador.devolverListaReclamosView(controlador.reclamosPorUnidad(controlador.buscarUnidad(codigo, piso, numero)));
 	}
 	
     @GetMapping("/unidades/codigo={codigo}&piso={piso}&numero={numero}/duenios")
@@ -89,5 +99,10 @@ public class UnidadController {
 	@DeleteMapping("/unidades/codigo={codigo}&piso={piso}&numero={numero}")
 	public void eliminarUnidad(@PathVariable int codigo, @PathVariable String piso, @PathVariable String numero) throws UnidadException {
 		controlador.eliminarUnidad(controlador.buscarUnidad(codigo, piso, numero));
+	}
+
+	@PostMapping("/unidades/codigo={codigo}&piso={piso}&numero={numero}/deshabitar")
+	public UnidadView deshabitarUnidad(@PathVariable int codigo, @PathVariable String piso, @PathVariable String numero) throws UnidadException {
+		return controlador.deshabitarUnidad(controlador.buscarUnidad(codigo, piso, numero)).toView();
 	}
 }

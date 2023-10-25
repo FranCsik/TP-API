@@ -99,6 +99,12 @@ public class Controlador {
 		return unidad;
 	}
 
+	public Unidad deshabitarUnidad(Unidad unidad) throws UnidadException {
+		unidad.deshabitar();
+		unidadRepository.save(unidad);
+		return unidad;
+	}
+
 	public Unidad liberarUnidad(Unidad unidad) throws UnidadException {
 		unidad.liberar();
 		unidadRepository.save(unidad);
@@ -140,15 +146,24 @@ public class Controlador {
 		return reclamoRepository.findByEdificio(edificio);
 	}
 	
-	public List<ReclamoView> reclamosPorUnidad(int codigo, String piso, String numero) {
-		//TODO: Esto debe buscar por codigo de edificio, piso y numero de unidad
-		Unidad un = unidadRepository.findById( codigo ).get();
-		List<Reclamo> reclamos = reclamoRepository.findByUnidad(un);
+	public List<Reclamo> reclamosPorUnidad(Unidad unidad) {
+		return reclamoRepository.findByUnidad(unidad);
+	}
+
+	public List<ReclamoView> devolverListaReclamosView(List<Reclamo> reclamos){
 		List<ReclamoView> resultado = new ArrayList<ReclamoView>();
-		for( Reclamo r: reclamos ) {
-			resultado.add( r.toView());
-		}
+		for(Reclamo reclamo : reclamos)
+			resultado.add(reclamo.toView());
 		return resultado;
+	}
+
+	public Unidad modificarUnidad(Unidad unidad, UnidadInputView actualizacion) throws UnidadException, EdificioException {
+		unidad.setPiso(actualizacion.getPiso());
+		unidad.setNumero(actualizacion.getNumero());
+		unidad.setEdificio(buscarEdificio(actualizacion.getCodigoEdificio()));
+		unidadRepository.save(unidad);
+		return unidad;
+
 	}
 	
 	public ReclamoView reclamoPorNumero(int numero) {
@@ -293,7 +308,7 @@ public class Controlador {
 		throw new PersonaException("La persona no tiene permisos para hacer el reclamo");
 	}
 
-	private boolean login(String mail, String password){
+	public boolean login(String mail, String password){
 		//TODO: Se debe agregar capa de seguridad, y tirar un request con mail y contraseña?
 
 		Optional<Persona> persona = personaRepository.findByMail(mail);
