@@ -27,174 +27,84 @@ public class ReclamosController {
 	@Autowired
 	AdministradorRepository administradorRepository;
 
+	//TODO: Se debe agregar filtro por estado
 	@GetMapping("/reclamos")
 	public List<ReclamoView> getReclamos(){
-		List<ReclamoView> resultado = new ArrayList<ReclamoView>();
-		for (Reclamo r: controlador.tomarReclamos()){
-			resultado.add(r.toView());
-		}
-		return resultado;
+		return controlador.devolverListaReclamosView(controlador.tomarReclamos());
 	}
 
     @GetMapping("/reclamos/edificio/{codigo}")
-    public List<ReclamoView> reclamosPorEdificio(@PathVariable int codigo){
-		Edificio ed = edificioRepository.findById( codigo ).get();
-		List<Reclamo> reclamos = reclamoRepository.findByEdificio(ed);
-		List<ReclamoView> resultado = new ArrayList<ReclamoView>();
-		for( Reclamo r: reclamos ) {
-			resultado.add( r.toView() );
-		}
-		return resultado;
+    public List<ReclamoView> reclamosPorEdificio(@PathVariable int codigo) throws EdificioException{
+		return controlador.devolverListaReclamosView(controlador.reclamosPorEdificio(controlador.buscarEdificio(codigo)));
 	}
 
     @GetMapping("/reclamos/unidad/codigo={codigo}&piso={piso}&numero={numero}")
-    public List<ReclamoView> reclamosPorUnidad(@PathVariable int codigo, @PathVariable String piso, @PathVariable String numero) {
-		Unidad un = unidadRepository.findById( codigo ).get();
-		List<Reclamo> reclamos = reclamoRepository.findByUnidad(un);
-		List<ReclamoView> resultado = new ArrayList<ReclamoView>();
-		for( Reclamo r: reclamos ) {
-			resultado.add( r.toView());
-		}
-		return resultado;
+    public List<ReclamoView> reclamosPorUnidad(@PathVariable int codigo, @PathVariable String piso, @PathVariable String numero) throws UnidadException {
+		return controlador.devolverListaReclamosView(controlador.reclamosPorUnidad(controlador.buscarUnidad(codigo, piso, numero)));
 	}
 
     @GetMapping("/reclamos/{numero}")
-    public ReclamoView reclamoPorNumero(@PathVariable int numero) {
-		Optional<Reclamo> reclamo = reclamoRepository.findById( numero );
-		ReclamoView resultado = null;
-		if( reclamo.isPresent() ) {
-			resultado = reclamo.get().toView();
-		}
-		return resultado;
+    public ReclamoView reclamoPorNumero(@PathVariable int numero) throws ReclamoException {
+		return controlador.buscarReclamo(numero).toView();
 	}
 
+    // @GetMapping("/reclamos/persona/{documento}&estado={estado}")
+    // public List<ReclamoView> reclamosPorPersona(@PathVariable String documento, @PathVariable("estado") Optional<Estado> estado) {
+	// 	//TODO: Se debe poder filtrar por nuevos, cerrados, etc
+	// 	if (estado.isPresent()){
+	// 		Persona persona = personaRepository.findById( documento ).get();
+	// 		List<Reclamo> reclamos = reclamoRepository.findByUsuarioAndEstado(persona, estado.get());
+	// 		List<ReclamoView> resultado = new ArrayList<ReclamoView>();
+	// 		for( Reclamo r: reclamos ) {
+	// 			resultado.add( r.toView() );
+	// 		}
+	// 		return resultado;
+	// 	}else{
+	// 		Persona persona = personaRepository.findById( documento ).get();
+	// 		List<Reclamo> reclamos = reclamoRepository.findByUsuario( persona );
+	// 		List<ReclamoView> resultado = new ArrayList<ReclamoView>();
+	// 		for( Reclamo r: reclamos ) {
+	// 			resultado.add( r.toView() );
+	// 		}
+	// 		return resultado;
+	// 	}
+	// }
 
-    @GetMapping("/reclamos/persona/{documento}&estado={estado}")
-    public List<ReclamoView> reclamosPorPersona(@PathVariable String documento, @PathVariable("estado") Optional<Estado> estado) {
-		//TODO: Se debe poder filtrar por nuevos, cerrados, etc
-		if (estado.isPresent()){
-			Persona persona = personaRepository.findById( documento ).get();
-			List<Reclamo> reclamos = reclamoRepository.findByUsuarioAndEstado(persona, estado.get());
-			List<ReclamoView> resultado = new ArrayList<ReclamoView>();
-			for( Reclamo r: reclamos ) {
-				resultado.add( r.toView() );
-			}
-			return resultado;
-		}else{
-			Persona persona = personaRepository.findById( documento ).get();
-			List<Reclamo> reclamos = reclamoRepository.findByUsuario( persona );
-			List<ReclamoView> resultado = new ArrayList<ReclamoView>();
-			for( Reclamo r: reclamos ) {
-				resultado.add( r.toView() );
-			}
-			return resultado;
-		}
+	@GetMapping("/reclamos/persona/{documento}")
+	public List<ReclamoView> reclamosPorPersona(@PathVariable String documento) throws PersonaException{
+		return controlador.devolverListaReclamosView(controlador.reclamosPorPersona(controlador.buscarPersona(documento)));
 	}
 
-	/* CHEQUEAR FUNCIONAMIENTO */
-	@PostMapping("/reclamos/agregar")
-	public int agregarReclamo( @RequestBody Reclamo reclamo ) throws EdificioException, UnidadException, PersonaException {
-		// Se debe hacer que el la unidad no exista, en ese caso se debera describir en ubicacion el lugar donde se encuentra el desperfecto
-		// Chequear que el reclamo lo haga el usuario valido 
-		// En caso de estar alquilada el inquilino puede hacer el reclamo
-		// En caso de ser una sala comun lo puede hacer cualquier persona
-		// En caso de no estar alquilada el propietario puede hacer el reclamo
-		Edificio edificio = reclamo.getEdificio();
-		Unidad unidad = reclamo.getUnidad();
-
-		//vemos si el usuario ingreso un edificio y si realmente existe
-		if( edificio == null || buscarEdificio( edificio.getCodigo() ) == null ) {
-			throw new EdificioException("El edificio no existe");
-		} else {
-			//Si existe, lo asigamos a la variable edificio
-			edificio = buscarEdificio( edificio.getCodigo() );
+	@PostMapping("/reclamos")
+	public ReclamoView agregarReclamo( @RequestBody ReclamoInputView reclamo ) throws EdificioException, UnidadException, PersonaException {
+		Edificio edificio = controlador.buscarEdificio(reclamo.getCodigoEdificio());
+		Persona persona = controlador.buscarPersona(reclamo.getdocumento());
+		Unidad unidad = null;
+		if (reclamo.getunidad() != null){
+			unidad = controlador.buscarUnidad(reclamo.getunidad().getCodigoEdificio(), reclamo.getunidad().getPiso(), reclamo.getunidad().getNumero());
 		}
-
-
-		//Si el usuario ingreso una unidad, chequeamos que exista
-		if( unidad != null){
-			if ( unidad.getPiso() != null && unidad.getNumero() != null ) {
-				unidad = controlador.buscarUnidad( unidad.getId(), unidad.getPiso(), unidad.getNumero() );
-				//Si no se encuentra la unidad, tiramos un error
-				if( unidad == null ) {
-					throw new UnidadException("La unidad no existe");
-				}
-			}else{
-				throw new UnidadException("Faltan ingresar datos de la unidad");
-			}
-
-		}
-		try{
-			validarPersonaCorrecta(unidad, reclamo.getUsuario().getDocumento(), reclamo.getUbicacion(), edificio);
-		}catch (PersonaException e){
-			throw new PersonaException("La persona no tiene permisos para hacer el reclamo");
-		}
-
-		reclamoRepository.save(reclamo);
-		return reclamo.getNumero();
-
+		Reclamo reclamoCreado = controlador.agregarReclamo(edificio, persona, reclamo.getUbicacion(), reclamo.getDescripcion(), Estado.nuevo, unidad);
+		return reclamoCreado.toView();
 	}
 
 	@PostMapping("/reclamos/{numero}/agregarImagen")
-	public void agregarImagenAReclamo(@PathVariable int numero, @RequestBody Imagen imagen) throws ReclamoException {
-		Reclamo reclamo = buscarReclamo(numero);
-		reclamo.agregarImagen( imagen.getDireccion(), imagen.getTipo() );
-		reclamoRepository.save( reclamo );
+	public ReclamoView agregarImagenAReclamo(@PathVariable int numero, @RequestBody Imagen imagen) throws ReclamoException {
+		Reclamo reclamo = controlador.buscarReclamo(numero);
+		Reclamo nuevoReclamo = controlador.agregarImagenAReclamo(reclamo, imagen);
+		return nuevoReclamo.toView();
 	}
 
-	//CHEQUEAR ESTE METODO
-	@PostMapping("/reclamos/{numero}/cambiarEstado")
-	public void cambiarEstado(@PathVariable int numero, @RequestBody Estado estado) throws ReclamoException {
-		//TODO: Dice anotar medidas tomadas, donde deberia de anotarse?
-		Reclamo reclamo = buscarReclamo(numero);
-		reclamo.cambiarEstado(estado);
-		reclamoRepository.save( reclamo );
+	@PutMapping("/reclamos/{numero}/cambiarEstado")
+	public ReclamoView cambiarEstado(@PathVariable int numero, @RequestBody Estado estado) throws ReclamoException {
+		Reclamo reclamo = controlador.buscarReclamo(numero);
+		Reclamo reclamoNuevo = controlador.cambiarEstado(reclamo, estado);
+		return reclamoNuevo.toView();
 	}
 
-
-	
-
-	private Edificio buscarEdificio(int codigo) throws EdificioException {
-		Optional<Edificio> oEdificio = edificioRepository.findById( codigo );
-		if( oEdificio.isPresent() ) {
-			return oEdificio.get();
-		}
-		return null;
+	@PutMapping("/reclamos/{numero}")
+	public ReclamoView actualizar(@PathVariable int numero, @RequestBody ReclamoActualizarView actualizacion) throws ReclamoException {
+		Reclamo reclamo = controlador.buscarReclamo(numero);
+		Reclamo reclamoNuevo = controlador.actualizarReclamo(reclamo, actualizacion);
+		return reclamoNuevo.toView();
 	}
-
-	private void validarPersonaCorrecta(Unidad unidad, String documento, String ubicacion, Edificio edificio) throws PersonaException{
-		if (unidad == null){
-			List<Persona> habilitados = edificio.habilitados();
-			for (Persona habilitado : habilitados) {
-				if (habilitado.getDocumento().equals(documento)) {
-					return;
-				}
-			}
-		}else{
-			if (unidad.getInquilinos().size() > 0){
-				for (Persona inquilino : unidad.getInquilinos()) {
-					if (inquilino.getDocumento().equals(documento)) {
-						return;
-					}
-			}
-			}else{
-				for (Persona duenio : unidad.getDuenios()) {
-					if (duenio.getDocumento().equals(documento)) {
-						return;
-					}
-				}
-			}
-		}
-		throw new PersonaException("La persona no tiene permisos para hacer el reclamo");
-	}
-
-	private Reclamo buscarReclamo(int numero) throws ReclamoException {
-		Optional<Reclamo> r = reclamoRepository.findById(numero);
-		if( r.isPresent() ) {
-			return r.get();
-		} else {
-			return null;
-		}
-	}
-    
 }

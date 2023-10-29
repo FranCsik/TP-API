@@ -163,19 +163,9 @@ public class Controlador {
 		unidad.setEdificio(buscarEdificio(actualizacion.getCodigoEdificio()));
 		unidadRepository.save(unidad);
 		return unidad;
-
 	}
 	
-	public ReclamoView reclamoPorNumero(int numero) {
-		Optional<Reclamo> reclamo = reclamoRepository.findById( numero );
-		ReclamoView resultado = null;
-		if( reclamo.isPresent() ) {
-			resultado = reclamo.get().toView();
-		}
-		return resultado;
-	}
-	
-	public List<ReclamoView> reclamosPorPersona(String documento, Estado estado) {
+	public List<ReclamoView> reclamosPorPersonaYEstado(String documento, Estado estado) {
 		//TODO: Se debe poder filtrar por nuevos, cerrados, etc
 		if (estado != null){
 			Persona persona = personaRepository.findById( documento ).get();
@@ -195,42 +185,26 @@ public class Controlador {
 			return resultado;
 		}
 	}
+
+	public List<Reclamo> reclamosPorPersona(Persona persona){
+		return reclamoRepository.findByUsuario(persona);
+	}
  
-	public int agregarReclamo(int codigoEdificio, Integer codigoUnidad, String piso, String numero, String documento, String ubicacion, String descripcion, Estado estado) throws EdificioException, UnidadException, PersonaException {
+	public Reclamo agregarReclamo(Edificio edificio, Persona persona, String ubicacion, String descripcion, Estado estado, Unidad unidad) throws EdificioException, UnidadException, PersonaException {
 		// Se debe hacer que el la unidad no exista, en ese caso se debera describir en ubicacion el lugar donde se encuentra el desperfecto
 		// Chequear que el reclamo lo haga el usuario valido 
 		// En caso de estar alquilada el inquilino puede hacer el reclamo
 		// En caso de ser una sala comun lo puede hacer cualquier persona
 		// En caso de no estar alquilada el propietario puede hacer el reclamo
-		Edificio edificio = null;
-		Unidad unidad = null;
-		try{
-			edificio = buscarEdificio(codigoEdificio);
-		}catch (EdificioException e){
-			throw new EdificioException("El edificio no existe");
-		}
-		if ( codigoUnidad != null && piso != null && numero != null ) {
-			try{
-				unidad = buscarUnidad(codigoUnidad, piso, numero);
-			}catch (UnidadException e){
-				throw new UnidadException("La unidad no existe");
-			}
-		}
-		try{
-			validarPersonaCorrecta(unidad, documento, ubicacion, edificio);
-		}catch (PersonaException e){
-			throw new PersonaException("La persona no tiene permisos para hacer el reclamo");
-		}
-		Persona persona = buscarPersona(documento);
-		Reclamo reclamo = new Reclamo(persona, edificio, ubicacion, descripcion, unidad, estado);
-		reclamoRepository.save(reclamo);
-		return reclamo.getNumero();
+		validarPersonaCorrecta(unidad, persona, ubicacion, edificio);
+		Reclamo reclamo = reclamoRepository.save(new Reclamo(persona, edificio, ubicacion, descripcion, unidad, estado));
+		return reclamo;
 	}
 	
-	public void agregarImagenAReclamo(int numero, String direccion, String tipo) throws ReclamoException {
-		Reclamo reclamo = buscarReclamo(numero);
-		reclamo.agregarImagen( direccion, tipo );
-		reclamoRepository.save( reclamo );
+	public Reclamo agregarImagenAReclamo(Reclamo reclamo, Imagen imagen) throws ReclamoException {
+		reclamo.agregarImagen( imagen );
+		Reclamo nuevoReclamo = reclamoRepository.save( reclamo );
+		return nuevoReclamo;
 	}
 	
 	public void cambiarEstado(int numero, Estado estado) throws ReclamoException {
@@ -273,33 +247,32 @@ public class Controlador {
 		}
 	}
 	
-	private Reclamo buscarReclamo(int numero) throws ReclamoException {
+	public Reclamo buscarReclamo(int numero) throws ReclamoException {
 		Optional<Reclamo> r = reclamoRepository.findById(numero);
 		if( r.isPresent() ) {
 			return r.get();
-		} else {
-			return null;
 		}
+		throw new ReclamoException("El reclamo no existe");
 	}
 
-	private void validarPersonaCorrecta(Unidad unidad, String documento, String ubicacion, Edificio edificio) throws PersonaException{
+	public void validarPersonaCorrecta(Unidad unidad, Persona persona, String ubicacion, Edificio edificio) throws PersonaException{
 		if (unidad == null){
 			List<Persona> habilitados = edificio.habilitados();
 			for (Persona habilitado : habilitados) {
-				if (habilitado.getDocumento().equals(documento)) {
+				if (habilitado.getDocumento().equals(persona.getDocumento())) {
 					return;
 				}
 			}
 		}else{
 			if (unidad.getInquilinos().size() > 0){
 				for (Persona inquilino : unidad.getInquilinos()) {
-					if (inquilino.getDocumento().equals(documento)) {
+					if (inquilino.getDocumento().equals(persona.getDocumento())) {
 						return;
 					}
 			}
 			}else{
 				for (Persona duenio : unidad.getDuenios()) {
-					if (duenio.getDocumento().equals(documento)) {
+					if (duenio.getDocumento().equals(persona.getDocumento())) {
 						return;
 					}
 				}
@@ -308,16 +281,30 @@ public class Controlador {
 		throw new PersonaException("La persona no tiene permisos para hacer el reclamo");
 	}
 
-	public boolean login(String mail, String password){
+	public Reclamo cambiarEstado(Reclamo reclamo, Estado estado){
+		reclamo.cambiarEstado(estado);
+		Reclamo reclamoNuevo = reclamoRepository.save( reclamo );
+		return reclamoNuevo;
+	}
+
+	public boolean login(String documento, String password){
 		//TODO: Se debe agregar capa de seguridad, y tirar un request con mail y contraseña?
 
-		Optional<Persona> persona = personaRepository.findByMail(mail);
+		Optional<Persona> persona = personaRepository.findById(documento);
 		if (persona.isPresent()){
 			if (persona.get().getPassword().equals(password)){
 				return true;
 			}
 		}
 		return false;
+	}
+
+	public Reclamo actualizarReclamo(Reclamo reclamo, ReclamoActualizarView actualizacion){
+		String nuevaDescripcion = reclamo.getDescripcion() + " - " + actualizacion.getDescripcion();
+		reclamo.setDescripcion(nuevaDescripcion);
+		reclamo.setEstado(actualizacion.getEstado());
+		Reclamo reclamoNuevo = reclamoRepository.save( reclamo );
+		return reclamoNuevo;
 	}
 
 	public List<Persona> tomarPersonas(){
