@@ -27,13 +27,8 @@ public class PersonaController {
 
     @PostMapping("/personas")
     public PersonaView crearPersona(@RequestBody PersonaCreateView PersonaCreateView) {
-		try{
-			Persona persona = controlador.agregarPersona(PersonaCreateView.toModel());
-			return persona.toView();
-		}catch (PersonaException e){
-			e.printStackTrace();
-			return null;
-		}
+		Persona persona = controlador.agregarPersona(PersonaCreateView.toModel());
+		return persona.toView();
 	}
 
 	@GetMapping("/personas")
@@ -47,38 +42,24 @@ public class PersonaController {
 	} 
 
 	@GetMapping("/personas/{documento}")
-	public PersonaCreateView getPersona(@PathVariable String documento) {
-		try{
-			Persona persona = controlador.buscarPersona(documento);
-			return persona.toCreateView();
-		} catch (PersonaException e) {
-			e.printStackTrace();
-			return null;
-		}
+	public PersonaCreateView getPersona(@PathVariable String documento) throws PersonaException {
+		Persona persona = controlador.buscarPersona(documento);
+		return persona.toCreateView();
 	}
 
 	@DeleteMapping("/personas/{documento}")
-	public void borrarPersona(@PathVariable String documento) {
-		try{
-			Persona persona = controlador.buscarPersona(documento);
-			controlador.eliminarPersona(persona);
-		} catch (PersonaException e) {
-			e.printStackTrace();
-		}
-		
+	public void borrarPersona(@PathVariable String documento) throws PersonaException {
+		Persona persona = controlador.buscarPersona(documento);
+		controlador.eliminarPersona(persona);
 	}
 
 	//TODO: Chequear si esta bien esto
 	@PutMapping("/personas/{documento}")
-	public PersonaCreateView modificarPersona(@PathVariable String documento, @RequestBody PersonaUpdateView actualizacion) {
-		try{
-			Persona persona = controlador.buscarPersona(documento);
-			Persona personaActualizada = controlador.modificarPersona(persona, actualizacion);
-			return personaActualizada.toCreateView();
-		} catch (PersonaException e) {
-			e.printStackTrace();
-			return null;
-		}
+	public PersonaCreateView modificarPersona(@PathVariable String documento, @RequestBody PersonaUpdateView actualizacion) throws PersonaException{
+		Persona persona = controlador.buscarPersona(documento);
+		Persona personaActualizada = controlador.modificarPersona(persona, actualizacion);
+		return personaActualizada.toCreateView();
+		
 	}
 
 }

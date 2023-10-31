@@ -1,8 +1,6 @@
 package com.example.demo.controller;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -29,18 +27,29 @@ public class ReclamosController {
 
 	//TODO: Se debe agregar filtro por estado
 	@GetMapping("/reclamos")
-	public List<ReclamoView> getReclamos(){
+	public List<ReclamoView> getReclamos(@RequestParam(required = false) Estado estado){
+		if (estado != null){
+			return controlador.devolverListaReclamosView(controlador.tomarReclamosPorEstado(estado));
+		}
 		return controlador.devolverListaReclamosView(controlador.tomarReclamos());
 	}
 
     @GetMapping("/reclamos/edificio/{codigo}")
-    public List<ReclamoView> reclamosPorEdificio(@PathVariable int codigo) throws EdificioException{
-		return controlador.devolverListaReclamosView(controlador.reclamosPorEdificio(controlador.buscarEdificio(codigo)));
+    public List<ReclamoView> reclamosPorEdificio(@PathVariable int codigo,@RequestParam(required = false) Estado  estado) throws EdificioException{
+		Edificio edificio = controlador.buscarEdificio(codigo);
+		if (estado != null){
+			return controlador.devolverListaReclamosView(controlador.reclamosPorEdificioYEstado(edificio, estado));
+		}
+		return controlador.devolverListaReclamosView(controlador.reclamosPorEdificio(edificio));
 	}
 
     @GetMapping("/reclamos/unidad/codigo={codigo}&piso={piso}&numero={numero}")
-    public List<ReclamoView> reclamosPorUnidad(@PathVariable int codigo, @PathVariable String piso, @PathVariable String numero) throws UnidadException {
-		return controlador.devolverListaReclamosView(controlador.reclamosPorUnidad(controlador.buscarUnidad(codigo, piso, numero)));
+    public List<ReclamoView> reclamosPorUnidad(@PathVariable int codigo, @PathVariable String piso, @PathVariable String numero, @RequestParam(required = false) Estado estado) throws UnidadException {
+		Unidad unidad = controlador.buscarUnidad(codigo, piso, numero);
+		if (estado != null){
+			return controlador.devolverListaReclamosView(controlador.reclamosPorUnidadYEstado(unidad, estado));
+		}
+		return controlador.devolverListaReclamosView(controlador.reclamosPorUnidad(unidad));
 	}
 
     @GetMapping("/reclamos/{numero}")
@@ -71,8 +80,12 @@ public class ReclamosController {
 	// }
 
 	@GetMapping("/reclamos/persona/{documento}")
-	public List<ReclamoView> reclamosPorPersona(@PathVariable String documento) throws PersonaException{
-		return controlador.devolverListaReclamosView(controlador.reclamosPorPersona(controlador.buscarPersona(documento)));
+	public List<ReclamoView> reclamosPorPersona(@PathVariable String documento, @RequestParam(required = false) Estado estado) throws PersonaException{
+		Persona persona = controlador.buscarPersona(documento);
+		if (estado != null){
+			return controlador.devolverListaReclamosView(controlador.reclamosPorPersonaYEstado(persona, estado));
+		}
+		return controlador.devolverListaReclamosView(controlador.reclamosPorPersona(persona));
 	}
 
 	@PostMapping("/reclamos")
@@ -106,5 +119,19 @@ public class ReclamosController {
 		Reclamo reclamo = controlador.buscarReclamo(numero);
 		Reclamo reclamoNuevo = controlador.actualizarReclamo(reclamo, actualizacion);
 		return reclamoNuevo.toView();
+	}
+
+	@DeleteMapping("/reclamos/{numero}")
+	public void eliminarReclamo(@PathVariable int numero) throws ReclamoException {
+		Reclamo reclamo = controlador.buscarReclamo(numero);
+		controlador.eliminarReclamo(reclamo);
+	}
+
+	@DeleteMapping("/reclamos/{numero}/eliminarImagen/{numeroImagen}")
+	public ReclamoView eliminarImagenDeReclamo(@PathVariable int numero, @PathVariable int numeroImagen) throws ReclamoException, ImagenException {
+		Reclamo reclamo = controlador.buscarReclamo(numero);
+		Imagen imagen = controlador.buscarImagen(numeroImagen);
+		Reclamo nuevoReclamo = controlador.eliminarImagenDeReclamo(reclamo, imagen);
+		return nuevoReclamo.toView();
 	}
 }

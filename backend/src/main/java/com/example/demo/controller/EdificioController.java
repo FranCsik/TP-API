@@ -43,30 +43,15 @@ public class EdificioController {
     }
 
 	@DeleteMapping("/edificios/{codigo}")
-	public void borrarEdificio(@PathVariable int codigo) {
-		try{
-			Edificio edificio = controlador.buscarEdificio(codigo);
-			if (edificio == null){
-				throw new EdificioException("No existe el edificio");
-			};
-			controlador.eliminarEdificio(edificio);
-		}catch (EdificioException e){
-			e.printStackTrace();
-		}
+	public void borrarEdificio(@PathVariable int codigo) throws EdificioException{
+		Edificio edificio = controlador.buscarEdificio(codigo);
+		controlador.eliminarEdificio(edificio);
 	}
 
 	@GetMapping("/edificios/{codigo}")
-	public EdificioView getEdificio(@PathVariable int codigo){
-		try{
-			Edificio edificio = controlador.buscarEdificio(codigo);
-			if (edificio == null){
-				throw new EdificioException("No existe el edificio");
-			};
-			return edificio.toView();
-		}catch (EdificioException e){
-			e.printStackTrace();
-			return null;
-		}
+	public EdificioView getEdificio(@PathVariable int codigo) throws EdificioException{
+		Edificio edificio = controlador.buscarEdificio(codigo);
+		return edificio.toView();
 	}
 
     @GetMapping("/edificios/{codigo}/unidades")

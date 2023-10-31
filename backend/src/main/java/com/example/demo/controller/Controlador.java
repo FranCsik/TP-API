@@ -24,6 +24,8 @@ public class Controlador {
 	ReclamoRepository reclamoRepository;
 	@Autowired
 	AdministradorRepository administradorRepository;
+	@Autowired
+	ImagenRepository imagenRepository;
 
 	
 	public List<Edificio> getEdificios(){
@@ -117,16 +119,12 @@ public class Controlador {
 		return unidad;
 	}
 	
-	public Persona agregarPersona(Persona persona) throws PersonaException{
-		try{
-			personaRepository.save(persona);
-		}catch (Exception e){
-			throw new PersonaException("No se pudo agregar la persona");
-		}
+	public Persona agregarPersona(Persona persona){
+		personaRepository.save(persona);
 		return persona;
 	}
 	
-	public void eliminarPersona(Persona persona) throws PersonaException {
+	public void eliminarPersona(Persona persona){
 		personaRepository.delete( persona );
 	}
 
@@ -165,25 +163,9 @@ public class Controlador {
 		return unidad;
 	}
 	
-	public List<ReclamoView> reclamosPorPersonaYEstado(String documento, Estado estado) {
+	public List<Reclamo> reclamosPorPersonaYEstado(Persona persona, Estado estado) {
 		//TODO: Se debe poder filtrar por nuevos, cerrados, etc
-		if (estado != null){
-			Persona persona = personaRepository.findById( documento ).get();
-			List<Reclamo> reclamos = reclamoRepository.findByUsuarioAndEstado(persona, estado);
-			List<ReclamoView> resultado = new ArrayList<ReclamoView>();
-			for( Reclamo r: reclamos ) {
-				resultado.add( r.toView() );
-			}
-			return resultado;
-		}else{
-			Persona persona = personaRepository.findById( documento ).get();
-			List<Reclamo> reclamos = reclamoRepository.findByUsuario( persona );
-			List<ReclamoView> resultado = new ArrayList<ReclamoView>();
-			for( Reclamo r: reclamos ) {
-				resultado.add( r.toView() );
-			}
-			return resultado;
-		}
+		return reclamoRepository.findByUsuarioAndEstado(persona, estado);
 	}
 
 	public List<Reclamo> reclamosPorPersona(Persona persona){
@@ -219,7 +201,7 @@ public class Controlador {
 		if( edificio.isPresent() ) {
 			return edificio.get();
 		}
-		return null;
+		throw new EdificioException("El edificio no existe");
 	}
 
 	public Unidad buscarUnidad(int codigo, String piso, String numero) throws UnidadException{
@@ -242,9 +224,8 @@ public class Controlador {
 		Optional<Persona> p = personaRepository.findById( documento );
 		if (p.isPresent() ){
 			return p.get();
-		} else {
-			return null;
 		}
+		throw new PersonaException("La persona no existe");
 	}
 	
 	public Reclamo buscarReclamo(int numero) throws ReclamoException {
@@ -299,6 +280,25 @@ public class Controlador {
 		return false;
 	}
 
+	public void eliminarReclamo(Reclamo reclamo){
+		reclamoRepository.delete(reclamo);
+
+	}
+
+	public Imagen buscarImagen(int numero) throws ImagenException{
+		Optional<Imagen> imagen = imagenRepository.findById(numero);
+		if (imagen.isPresent()){
+			return imagen.get();
+		}
+		throw new ImagenException("La imagen no existe");
+
+	}
+
+	public Reclamo eliminarImagenDeReclamo(Reclamo reclamo, Imagen imagen){
+		reclamo.eliminarImagen(imagen);
+		return reclamoRepository.save(reclamo);
+	}
+
 	public Reclamo actualizarReclamo(Reclamo reclamo, ReclamoActualizarView actualizacion){
 		String nuevaDescripcion = reclamo.getDescripcion() + " - " + actualizacion.getDescripcion();
 		reclamo.setDescripcion(nuevaDescripcion);
@@ -314,6 +314,18 @@ public class Controlador {
 	public Edificio agregarEdificio(Edificio edificio){
 		edificioRepository.save(edificio);
 		return edificio;
+	}
+
+	public List<Reclamo> reclamosPorUnidadYEstado(Unidad unidad, Estado estado){
+		return reclamoRepository.findByUnidadAndEstado(unidad,estado);
+	}
+
+	public List<Reclamo> tomarReclamosPorEstado(Estado estado){
+		return reclamoRepository.findByEstado(estado);
+	}
+
+	public List<Reclamo> reclamosPorEdificioYEstado(Edificio edificio, Estado estado){
+		return reclamoRepository.findByEdificioAndEstado(edificio, estado);
 	}
 
 	public void eliminarEdificio(Edificio edificio){

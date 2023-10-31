@@ -141,4 +141,7 @@ public class Reclamo {
 		this.imagenes = imagenes;
 	}
 
+	public void eliminarImagen(Imagen imagen){
+		this.imagenes.remove(imagen);
+	}
 }
