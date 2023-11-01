@@ -15,4 +15,7 @@ public interface ReclamoRepository extends JpaRepository<Reclamo, Integer> {
 	List<Reclamo> findByUnidad(Unidad unidad);
 	List<Reclamo> findByUsuario(Persona persona);
 	List<Reclamo> findByUsuarioAndEstado(Persona persona, Estado estado);
+	List<Reclamo> findByEstado(Estado estado);
+	List<Reclamo> findByEdificioAndEstado(Edificio edificio, Estado estado);
+	List<Reclamo> findByUnidadAndEstado(Unidad unidad, Estado estado);
 }

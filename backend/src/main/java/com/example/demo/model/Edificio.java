@@ -1,5 +1,6 @@
 package com.example.demo.model;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -19,10 +20,10 @@ public class Edificio {
 	@OneToMany(fetch = FetchType.EAGER, mappedBy="edificio")
 	private List<Unidad> unidades;
 	
-	public Edificio(int codigo, String nombre, String direccion) {
-		this.codigo = codigo;
+	public Edificio( String nombre, String direccion) {
 		this.nombre = nombre;
 		this.direccion = direccion;
+		this.unidades = new ArrayList<Unidad>();
 	}
 	public Edificio() {}
 	
@@ -42,12 +43,11 @@ public class Edificio {
 		this.unidades = unidades;
 	}
 
-	
 	public void agregarUnidad(Unidad unidad) {
 		unidades.add(unidad);
 	}
 	
-	public Set<Persona> habilitados(){
+	public List<Persona> habilitados(){
 		Set<Persona> habilitados = new HashSet<Persona>();
 		for(Unidad unidad : unidades) {
 			List<Persona> duenios = unidad.getDuenios();
@@ -57,7 +57,7 @@ public class Edificio {
 			for(Persona p : inquilinos)
 				habilitados.add(p);
 		}
-		return habilitados;
+		return new ArrayList<Persona>(habilitados);
 	}
 
 	public int getCodigo() {
@@ -76,17 +76,17 @@ public class Edificio {
 		return unidades;
 	}
 
-	public Set<Persona> duenios() {
+	public List<Persona> duenios() {
 		Set<Persona> resultado = new HashSet<Persona>();
 		for(Unidad unidad : unidades) {
 			List<Persona> duenios = unidad.getDuenios();
 			for(Persona p : duenios)
 				resultado.add(p);
 		}
-		return resultado;
+		return new ArrayList<Persona>(resultado);
 	}
 
-	public Set<Persona> habitantes() {
+	public List<Persona> habitantes() {
 		Set<Persona> resultado = new HashSet<Persona>();
 		for(Unidad unidad : unidades) {
 			if(unidad.estaHabitado()) {
@@ -101,12 +101,10 @@ public class Edificio {
 				}
 			}
 		}
-		return resultado;
+		return new ArrayList<Persona>(resultado);
 	}
 
 	public EdificioView toView() {
 		return new EdificioView(codigo, nombre, direccion);
-	}
-
-	
+	}	
 }

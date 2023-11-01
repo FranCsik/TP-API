@@ -11,7 +11,6 @@ import com.example.demo.dao.EdificioRepository;
 import com.example.demo.dao.PersonaRepository;
 import com.example.demo.dao.ReclamoRepository;
 import com.example.demo.dao.UnidadRepository;
-import com.example.demo.model.Persona;
 
 @SpringBootApplication
 public class Application implements CommandLineRunner {
@@ -27,6 +26,8 @@ public class Application implements CommandLineRunner {
 	PersonaRepository personaRepository;
 	@Autowired
 	ReclamoRepository reclamoRepository;
+	@Autowired
+	ReclamoRepository administradorRepository;
 
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);

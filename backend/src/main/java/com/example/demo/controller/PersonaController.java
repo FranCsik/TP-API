@@ -1,8 +1,6 @@
 package com.example.demo.controller;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +12,8 @@ import com.example.demo.exceptions.*;
 
 @RestController
 public class PersonaController {
+	@Autowired
+	Controlador controlador;
     @Autowired
 	EdificioRepository edificioRepository;
 	@Autowired
@@ -22,32 +22,44 @@ public class PersonaController {
 	UnidadRepository unidadRepository;
 	@Autowired
 	ReclamoRepository reclamoRepository;
+	@Autowired
+	AdministradorRepository administradorRepository;
 
-    @PostMapping("/personas/crear")
-    public void crearPersona(@RequestBody Persona persona) {
-		personaRepository.save(persona);
+    @PostMapping("/personas")
+    public PersonaView crearPersona(@RequestBody PersonaCreateView PersonaCreateView) {
+		Persona persona = controlador.agregarPersona(PersonaCreateView.toModel());
+		return persona.toView();
 	}
 
-	@PostMapping("/personas/borrar")
-	public void borrarPersona(@RequestBody Persona persona) {
-		personaRepository.delete(persona);
-	}
-
-	//Este metodo sirve para cambiar los datos y la contrasenia de una persona
-	//NO FUNCIONA CORRECTAMENTE
-	@PostMapping("/personas/modificar")
-	public void modificarPersona(@RequestBody Persona persona) {
-		personaRepository.save(persona);
-	}
-
-
-	public Persona buscarPersona(String documento) throws PersonaException {
-		Optional<Persona> p = personaRepository.findById( documento );
-		if (p.isPresent() ){
-			return p.get();
-		} else {
-			return null;
+	@GetMapping("/personas")
+	private List<PersonaView> getPersonas() {
+		List<Persona> personas = controlador.tomarPersonas();
+		List<PersonaView> personasView = new ArrayList<PersonaView>();
+		for (Persona persona : personas) {
+			personasView.add(persona.toView());
 		}
+		return personasView;
+	} 
+
+	@GetMapping("/personas/{documento}")
+	public PersonaCreateView getPersona(@PathVariable String documento) throws PersonaException {
+		Persona persona = controlador.buscarPersona(documento);
+		return persona.toCreateView();
+	}
+
+	@DeleteMapping("/personas/{documento}")
+	public void borrarPersona(@PathVariable String documento) throws PersonaException {
+		Persona persona = controlador.buscarPersona(documento);
+		controlador.eliminarPersona(persona);
+	}
+
+	//TODO: Chequear si esta bien esto
+	@PutMapping("/personas/{documento}")
+	public PersonaCreateView modificarPersona(@PathVariable String documento, @RequestBody PersonaUpdateView actualizacion) throws PersonaException{
+		Persona persona = controlador.buscarPersona(documento);
+		Persona personaActualizada = controlador.modificarPersona(persona, actualizacion);
+		return personaActualizada.toCreateView();
+		
 	}
 
 }

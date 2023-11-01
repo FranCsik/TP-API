@@ -2,8 +2,6 @@ package com.example.demo.controller;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -25,87 +23,86 @@ public class UnidadController {
 	UnidadRepository unidadRepository;
 	@Autowired
 	ReclamoRepository reclamoRepository;
+	@Autowired
+	AdministradorRepository administradorRepository;
 
+	@GetMapping("/unidades")
+	public List<UnidadView> getUnidades(){
+		List<UnidadView> unidadesView = new ArrayList<UnidadView>();
+		for(Unidad unidad : controlador.tomarUnidades()) {
+			unidadesView.add(unidad.toView());
+		}
+		return unidadesView;
+	}
+
+	@GetMapping("/unidades/codigo={codigo}&piso={piso}&numero={numero}")
+	public UnidadView getUnidad(@PathVariable int codigo, @PathVariable String piso, @PathVariable String numero) throws UnidadException{
+		Unidad unidad = controlador.buscarUnidad(codigo, piso, numero);
+		return unidad.toView();
+	}
+
+	@PostMapping("/unidades")
+	public UnidadView createUnidad(@RequestBody UnidadInputView unidad) throws UnidadException, EdificioException{
+		return controlador.agregarUnidad(new Unidad(unidad.getPiso(), unidad.getNumero(), controlador.buscarEdificio(unidad.getCodigoEdificio()))).toView();
+	}
+
+	@PutMapping("/unidades/codigo={codigo}&piso={piso}&numero={numero}")
+	public UnidadView updateUnidad(@PathVariable int codigo, @PathVariable String piso, @PathVariable String numero, @RequestBody UnidadInputView unidad) throws UnidadException, EdificioException{
+		return controlador.modificarUnidad(controlador.buscarUnidad(codigo, piso, numero), unidad).toView();
+	}
+
+	@GetMapping("/unidades/codigo={codigo}&piso={piso}&numero={numero}/reclamos")
+	public List<ReclamoView> reclamosPorUnidad(@PathVariable int codigo, @PathVariable String piso, @PathVariable String numero) throws UnidadException{
+		return controlador.devolverListaReclamosView(controlador.reclamosPorUnidad(controlador.buscarUnidad(codigo, piso, numero)));
+	}
+	
     @GetMapping("/unidades/codigo={codigo}&piso={piso}&numero={numero}/duenios")
     public List<PersonaView> dueniosPorUnidad(@PathVariable int codigo, @PathVariable  String piso, @PathVariable String numero) throws UnidadException{
-		List<PersonaView> resultado = new ArrayList<PersonaView>();
-		Unidad unidad = buscarUnidad(codigo, piso, numero);
-		List<Persona> duenios = unidad.getDuenios();
-		for(Persona persona : duenios)
-			resultado.add(persona.toView());
-		return resultado;
+		return controlador.devolverListaPersonasView(controlador.buscarUnidad(codigo, piso, numero).getDuenios());
 	}
 
     @GetMapping("/unidades/codigo={codigo}&piso={piso}&numero={numero}/inquilinos")
     public List<PersonaView> inquilinosPorUnidad(@PathVariable int codigo, @PathVariable String piso, @PathVariable String numero) throws UnidadException{
-		List<PersonaView> resultado = new ArrayList<PersonaView>();
-		Unidad unidad = buscarUnidad(codigo, piso, numero);
-		List<Persona> inquilinos = unidad.getInquilinos();
-		for(Persona persona : inquilinos)
-			resultado.add(persona.toView());
-		return resultado;
+		return controlador.devolverListaPersonasView(controlador.buscarUnidad(codigo, piso, numero).getInquilinos());
 	}
 
-    @PostMapping("/unidades/codigo={codigo}&piso={piso}&numero={numero}/transferir")
-    public void transferirUnidad(@PathVariable int codigo, @PathVariable String piso, @PathVariable String numero, @RequestBody Persona persona) throws UnidadException, PersonaException {
-		Unidad unidad = buscarUnidad(codigo, piso, numero);
-		unidad.transferir(persona);
-		unidadRepository.save(unidad);
+    @PostMapping("/unidades/codigo={codigo}&piso={piso}&numero={numero}/transferir")	
+    public UnidadView transferirUnidad(@PathVariable int codigo, @PathVariable String piso, @PathVariable String numero, @RequestBody List<DocumentoView> personas) throws UnidadException, PersonaException {
+		return controlador.transferirUnidad(controlador.buscarUnidad(codigo, piso, numero), controlador.buscarPersonas(personas)).toView();
 	}
 
-	@PostMapping("/unidades/codigo={codigo}&piso={piso}&numero={numero}/agregarDuenio")
-	public void agregarDuenioUnidad(@PathVariable int codigo, @PathVariable String piso, @PathVariable String numero, @RequestBody Persona persona) throws UnidadException, PersonaException {
-		Unidad unidad = buscarUnidad(codigo, piso, numero);
-		unidad.agregarDuenio(persona);
-		unidadRepository.save(unidad);
+	@PostMapping("/unidades/codigo={codigo}&piso={piso}&numero={numero}/agregarDuenio/{documento}")
+	public UnidadView agregarDuenioUnidad(@PathVariable int codigo, @PathVariable String piso, @PathVariable String numero, @PathVariable String documento) throws UnidadException, PersonaException {
+		return controlador.agregarDuenioUnidad(controlador.buscarUnidad(codigo, piso, numero), controlador.buscarPersona(documento)).toView();
 	}
 
 	@PostMapping("/unidades/codigo={codigo}&piso={piso}&numero={numero}/alquilar")
-	public void alquilarUnidad(@PathVariable int codigo, @PathVariable String piso, @PathVariable String numero, @RequestBody Persona persona) throws UnidadException, PersonaException{
-		Unidad unidad = buscarUnidad(codigo, piso, numero);
-		System.out.println( "Unidad: " + unidad.getId() );
-		unidad.alquilar(persona);
-		unidadRepository.save(unidad);
+	public UnidadView alquilarUnidad(@PathVariable int codigo, @PathVariable String piso, @PathVariable String numero, @RequestBody(required = false) List<DocumentoView> documentos) throws UnidadException, PersonaException{
+		return controlador.alquilarUnidad(controlador.buscarUnidad(codigo, piso, numero), documentos).toView();
 	}
 
-	@PostMapping("/unidades/codigo={codigo}&piso={piso}&numero={numero}/agregarInquilino")
-	public void agregarInquilinoUnidad(@PathVariable int codigo, @PathVariable String piso, @PathVariable String numero, @RequestBody Persona persona) throws UnidadException, PersonaException{
-		Unidad unidad = buscarUnidad(codigo, piso, numero);
-		unidad.agregarInquilino(persona);
-		unidadRepository.save(unidad);
+	@PostMapping("/unidades/codigo={codigo}&piso={piso}&numero={numero}/agregarInquilino/{documento}")
+	public UnidadView agregarInquilinoUnidad(@PathVariable int codigo, @PathVariable String piso, @PathVariable String numero, @PathVariable String documento) throws UnidadException, PersonaException{
+		return controlador.agregarInquilinoUnidad(controlador.buscarUnidad(codigo, piso, numero), controlador.buscarPersona(documento)).toView();
 	}
 
 	@PostMapping("/unidades/codigo={codigo}&piso={piso}&numero={numero}/liberar")
-	public void liberarUnidad(@PathVariable int codigo, @PathVariable String piso, @PathVariable String numero) throws UnidadException {
-		Unidad unidad = buscarUnidad(codigo, piso, numero);
-		unidad.liberar();
-		unidadRepository.save(unidad);
+	public UnidadView liberarUnidad(@PathVariable int codigo, @PathVariable String piso, @PathVariable String numero) throws UnidadException {
+		return controlador.liberarUnidad(controlador.buscarUnidad(codigo, piso, numero)).toView();
 	}
 
 	@PostMapping("/unidades/codigo={codigo}&piso={piso}&numero={numero}/habitar")
-	public void habitarUnidad(@PathVariable int codigo, @PathVariable String piso, @PathVariable String numero) throws UnidadException {
-		Unidad unidad = buscarUnidad(codigo, piso, numero);
-		unidad.habitar();
-		unidadRepository.save(unidad);
+	public UnidadView habitarUnidad(@PathVariable int codigo, @PathVariable String piso, @PathVariable String numero) throws UnidadException {
+		return controlador.habitarUnidad(controlador.buscarUnidad(codigo, piso, numero)).toView();
 	}
 
-
-    private Unidad buscarUnidad(int codigo, String piso, String numero) throws UnidadException{
-		Optional<Unidad> u = unidadRepository.findByIdAndPisoAndNumero(codigo, piso, numero);
-		if (u.isPresent() ){
-			return u.get();
-		} else {
-			return null;
-		}
-	}
-    
-    public Persona buscarPersona(String documento) throws PersonaException {
-		Optional<Persona> p = personaRepository.findById( documento );
-		if (p.isPresent() ){
-			return p.get();
-		} else {
-			return null;
-		}
+	@DeleteMapping("/unidades/codigo={codigo}&piso={piso}&numero={numero}")
+	public void eliminarUnidad(@PathVariable int codigo, @PathVariable String piso, @PathVariable String numero) throws UnidadException {
+		controlador.eliminarUnidad(controlador.buscarUnidad(codigo, piso, numero));
 	}
 
+	@PostMapping("/unidades/codigo={codigo}&piso={piso}&numero={numero}/deshabitar")
+	public UnidadView deshabitarUnidad(@PathVariable int codigo, @PathVariable String piso, @PathVariable String numero) throws UnidadException {
+		return controlador.deshabitarUnidad(controlador.buscarUnidad(codigo, piso, numero)).toView();
+	}
 }

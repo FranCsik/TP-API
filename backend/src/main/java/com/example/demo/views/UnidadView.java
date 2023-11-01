@@ -1,29 +1,28 @@
 package com.example.demo.views;
 
+import java.util.List;
+
+import com.example.demo.model.Unidad;
+
 public class UnidadView {
 
-	private int id;
 	private String piso;
 	private String numero;
 	private boolean habitado;
 	private EdificioView edificio;
+	private List<PersonaView> inquilinos;
+	private List<PersonaView> duenios;
 	
 	public UnidadView() {}
 
-	public UnidadView(int id, String piso, String numero, boolean habitado, EdificioView edificio) {
-		this.id = id;
+	public UnidadView(String piso, String numero, boolean habitado, EdificioView edificio, List<PersonaView> inquilinos, List<PersonaView> duenios) {
+		
 		this.piso = piso;
 		this.numero = numero;
 		this.habitado = habitado;
 		this.edificio = edificio;
-	}
-
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
+		this.inquilinos = inquilinos;
+		this.duenios = duenios;
 	}
 
 	public String getPiso() {
@@ -50,6 +49,18 @@ public class UnidadView {
 		this.habitado = habitado;
 	}
 
+	// public EdificioView getEdificio() {
+	// 	return edificio;
+	// }
+
+	// public void setEdificio(EdificioView edificio) {
+	// 	this.edificio = edificio;
+	// }
+	
+	public String toString() {
+		return piso + " " + numero;
+	}
+
 	public EdificioView getEdificio() {
 		return edificio;
 	}
@@ -57,8 +68,24 @@ public class UnidadView {
 	public void setEdificio(EdificioView edificio) {
 		this.edificio = edificio;
 	}
-	
-	public String toString() {
-		return piso + " " + numero;
+
+	public List<PersonaView> getInquilinos() {
+		return inquilinos;
+	}
+
+	public void setInquilinos(List<PersonaView> inquilinos) {
+		this.inquilinos = inquilinos;
+	}
+
+	public List<PersonaView> getDuenios() {
+		return duenios;
+	}
+
+	public void setDuenios(List<PersonaView> duenios) {
+		this.duenios = duenios;
+	}
+
+	public Unidad toModel(){
+		return new Unidad(piso, numero, edificio.toModel());
 	}
 }

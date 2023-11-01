@@ -2,8 +2,6 @@ package com.example.demo.controller;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -26,98 +24,90 @@ public class EdificioController {
 	UnidadRepository unidadRepository;
 	@Autowired
 	ReclamoRepository reclamoRepository;
+	@Autowired
+	AdministradorRepository administradorRepository;
 
     @GetMapping("/edificios")
     public List<EdificioView> getEdificios(){
-        List<Edificio> edificios = edificioRepository.findAll();
 		List<EdificioView> views = new ArrayList<EdificioView>();
-		for(Edificio e: edificios) {
+		for(Edificio e: controlador.getEdificios()) {
 			views.add( e.toView() );
 		}
 		return views;
     }
 
-    @PostMapping("/edificios/crear")
-    public void crearEdificio(@RequestBody Edificio edificio){
-        edificioRepository.save( edificio );
-        
+    @PostMapping("/edificios")
+    public EdificioView crearEdificio(@RequestBody EdificioView edificio){
+		Edificio edificioModel = controlador.agregarEdificio(edificio.toModel());
+		return edificioModel.toView();
     }
 
-	@PostMapping("/edificios/borrar")
-	public void borrarEdificio(@RequestBody Edificio edificio) {
-		edificioRepository.delete( edificio );
+	@DeleteMapping("/edificios/{codigo}")
+	public void borrarEdificio(@PathVariable int codigo) throws EdificioException{
+		Edificio edificio = controlador.buscarEdificio(codigo);
+		controlador.eliminarEdificio(edificio);
 	}
 
 	@GetMapping("/edificios/{codigo}")
 	public EdificioView getEdificio(@PathVariable int codigo) throws EdificioException{
-		Optional<Edificio> edificio = edificioRepository.findById( codigo );
-		if( edificio.isPresent() ) {
-			return edificio.get().toView();
-		}
-		throw new EdificioException("No existe el edificio con codigo " + codigo);
+		Edificio edificio = controlador.buscarEdificio(codigo);
+		return edificio.toView();
 	}
 
     @GetMapping("/edificios/{codigo}/unidades")
     public List<UnidadView> getUnidadesPorEdificio(@PathVariable int codigo) throws EdificioException{
-		List<UnidadView> resultado = new ArrayList<UnidadView>();
-		Optional<Edificio> edificio = edificioRepository.findById( codigo );
-		if( edificio.isPresent() ) {
-			List<Unidad> unidades = edificio.get().getUnidades();
-			for(Unidad unidad : unidades)
-				resultado.add(unidad.toView());
+		Edificio edificio = controlador.buscarEdificio(codigo);
+		List<UnidadView> unidadesView = new ArrayList<UnidadView>();
+		for(Unidad u: controlador.getUnidadesPorEdificio(edificio)) {
+			unidadesView.add( u.toView() );
 		}
-		return resultado;
+		return unidadesView;
 	}
 
     @GetMapping("/edificios/{codigo}/habilitados")
     public List<PersonaView> habilitadosPorEdificio(@PathVariable int codigo) throws EdificioException{
+		Edificio edificio = controlador.buscarEdificio(codigo);
 		List<PersonaView> resultado = new ArrayList<PersonaView>();
-		Optional<Edificio> edificio = edificioRepository.findById( codigo );
-		if( edificio.isPresent() ) {
-			Set<Persona> habilitados = edificio.get().habilitados();
-			for(Persona persona : habilitados)
-				resultado.add(persona.toView());			
+		for (Persona persona : controlador.habilitadosPorEdificio(edificio)) {
+			resultado.add(persona.toView());
 		}
 		return resultado;
 	}
 
     @GetMapping("/edificios/{codigo}/duenios")
     public List<PersonaView> dueniosPorEdificio(@PathVariable int codigo) throws EdificioException{
-        List<PersonaView> resultado = new ArrayList<PersonaView>();
-        Optional<Edificio> edificio = edificioRepository.findById( codigo );
-        if( edificio.isPresent() ) {
-            List<Unidad> unidades = edificio.get().getUnidades();
-            for(Unidad unidad : unidades) {
-                List<Persona> duenios = unidad.getDuenios();
-                for(Persona persona : duenios)
-                    resultado.add(persona.toView());
-            }
-        }
+		Edificio edificio = controlador.buscarEdificio(codigo);
+		List<PersonaView> resultado = new ArrayList<PersonaView>();
+		for (Persona persona : controlador.dueniosPorEdificio(edificio)) {
+			resultado.add(persona.toView());
+		}
         return resultado;
     }
     @GetMapping("/edificios/{codigo}/habitantes")
 	public List<PersonaView> habitantesPorEdificio(@PathVariable int codigo) throws EdificioException{
+		Edificio edificio = controlador.buscarEdificio(codigo);
 		List<PersonaView> resultado = new ArrayList<PersonaView>();
-		Optional<Edificio> edificio = edificioRepository.findById( codigo );
-		if( edificio.isPresent() ){
-			for(Persona persona : edificio.get().habitantes()) {
-				resultado.add(persona.toView());					
-			}
-
+		for (Persona persona : controlador.habitantesPorEdificio(edificio)) {
+			resultado.add(persona.toView());
 		}
 		return resultado;	
 	}
 
     @GetMapping("/edificios/{codigo}/reclamos")
-	public List<ReclamoView> reclamosPorEdificio(@PathVariable int codigo){
-		Edificio ed = edificioRepository.findById( codigo ).get();
-		List<Reclamo> reclamos = reclamoRepository.findByEdificio(ed);
+	public List<ReclamoView> reclamosPorEdificio(@PathVariable int codigo) throws EdificioException{
+		Edificio edificio = controlador.buscarEdificio(codigo);
 		List<ReclamoView> resultado = new ArrayList<ReclamoView>();
-		for( Reclamo r: reclamos ) {
-			resultado.add( r.toView() );
+		for (Reclamo reclamo : controlador.reclamosPorEdificio(edificio)) {
+			resultado.add(reclamo.toView());
 		}
 		return resultado;
 	}
 
+	@PutMapping("/edificios/{codigo}")
+	public EdificioView modificarEdificio(@PathVariable int codigo, @RequestBody EdificioView actualizacion) throws EdificioException{
+		Edificio edificio = controlador.buscarEdificio(codigo);
+		Edificio edificioActualizado = controlador.modificarEdificio(edificio, actualizacion);
+		return edificioActualizado.toView();
+	}
 
 }

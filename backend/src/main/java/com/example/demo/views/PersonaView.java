@@ -31,5 +31,7 @@ public class PersonaView {
 	public String toString() {
 		return documento + " " + nombre;
 	}
+
+	
 	
 }

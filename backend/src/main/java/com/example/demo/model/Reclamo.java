@@ -51,8 +51,7 @@ public class Reclamo {
 	
 	public Reclamo() {}
 
-	public void agregarImagen(String direccion, String tipo) {
-		Imagen imagen = new Imagen(direccion, tipo);
+	public void agregarImagen(Imagen imagen) {
 		imagenes.add(imagen);
 	}
 	
@@ -118,4 +117,35 @@ public class Reclamo {
 		
 	}
 
+	public void setUsuario(Persona usuario) {
+		this.usuario = usuario;
+	}
+
+	public void setEdificio(Edificio edificio) {
+		this.edificio = edificio;
+	}
+
+	public void setUbicacion(String ubicacion) {
+		this.ubicacion = ubicacion;
+	}
+
+	public void setDescripcion(String descripcion) {
+		this.descripcion = descripcion;
+	}
+
+	public void setUnidad(Unidad unidad) {
+		this.unidad = unidad;
+	}
+
+	public void setEstado(Estado estado) {
+		this.estado = estado;
+	}
+
+	public void setImagenes(List<Imagen> imagenes) {
+		this.imagenes = imagenes;
+	}
+
+	public void eliminarImagen(Imagen imagen){
+		this.imagenes.remove(imagen);
+	}
 }
