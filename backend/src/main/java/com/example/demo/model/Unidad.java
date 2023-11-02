@@ -133,7 +133,7 @@ public class Unidad {
 		for(Persona duenio : this.duenios) {
 			dueniosView.add(duenio.toView());
 		}
-		return new UnidadView(piso, numero, habitado, edificio.toView(), inquilinosView, dueniosView);
+		return new UnidadView(id, piso, numero, habitado, edificio.toView(), inquilinosView, dueniosView);
 	}
 
 	public void setId(int id) {

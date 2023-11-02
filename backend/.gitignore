@@ -36,3 +36,10 @@ out/
 ### VS Code ###
 .vscode/
 
+## Configuracion BD
+backend/src/main/resources/application.properties
+*.properties
+.properties
+
+# Ignorar el archivo application.properties
+application.properties

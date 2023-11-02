@@ -25,12 +25,14 @@ public class PersonaController {
 	@Autowired
 	AdministradorRepository administradorRepository;
 
+	@CrossOrigin
     @PostMapping("/personas")
     public PersonaView crearPersona(@RequestBody PersonaCreateView PersonaCreateView) {
 		Persona persona = controlador.agregarPersona(PersonaCreateView.toModel());
 		return persona.toView();
 	}
 
+	@CrossOrigin
 	@GetMapping("/personas")
 	private List<PersonaView> getPersonas() {
 		List<Persona> personas = controlador.tomarPersonas();
@@ -41,12 +43,14 @@ public class PersonaController {
 		return personasView;
 	} 
 
+	@CrossOrigin
 	@GetMapping("/personas/{documento}")
 	public PersonaCreateView getPersona(@PathVariable String documento) throws PersonaException {
 		Persona persona = controlador.buscarPersona(documento);
 		return persona.toCreateView();
 	}
 
+	@CrossOrigin
 	@DeleteMapping("/personas/{documento}")
 	public void borrarPersona(@PathVariable String documento) throws PersonaException {
 		Persona persona = controlador.buscarPersona(documento);
@@ -54,6 +58,7 @@ public class PersonaController {
 	}
 
 	//TODO: Chequear si esta bien esto
+	@CrossOrigin
 	@PutMapping("/personas/{documento}")
 	public PersonaCreateView modificarPersona(@PathVariable String documento, @RequestBody PersonaUpdateView actualizacion) throws PersonaException{
 		Persona persona = controlador.buscarPersona(documento);

@@ -6,6 +6,7 @@ import com.example.demo.model.Unidad;
 
 public class UnidadView {
 
+	private int id;
 	private String piso;
 	private String numero;
 	private boolean habitado;
@@ -15,14 +16,23 @@ public class UnidadView {
 	
 	public UnidadView() {}
 
-	public UnidadView(String piso, String numero, boolean habitado, EdificioView edificio, List<PersonaView> inquilinos, List<PersonaView> duenios) {
+	public UnidadView(int id, String piso, String numero, boolean habitado, EdificioView edificio, List<PersonaView> inquilinos, List<PersonaView> duenios) {
 		
+		this.id = id;
 		this.piso = piso;
 		this.numero = numero;
 		this.habitado = habitado;
 		this.edificio = edificio;
 		this.inquilinos = inquilinos;
 		this.duenios = duenios;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public String getPiso() {
