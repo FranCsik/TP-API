@@ -3,12 +3,5 @@
 	"dockerComposeFile": "../../compose.yaml",
 	"service": "frontend",
 	"workspaceFolder": "/app",
-	"overrideCommand": true,
-	"customizations": {
-		"vscode": {
-			"extensions": [
-				"dbaeumer.vscode-eslint"
-			]
-		}
-	}
+	"overrideCommand": true
 }
