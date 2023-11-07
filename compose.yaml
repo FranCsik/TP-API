@@ -26,8 +26,8 @@ services:
   frontend:
     image: node:20.0.0
     working_dir: /app
-    expose:
-      - 80
+    # expose:
+    #   - 80
     networks:
       - backend
       - default

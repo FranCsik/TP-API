@@ -1,24 +1,10 @@
 package com.example.demo;
 
-import java.util.List;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.example.demo.controller.Controlador;
-import com.example.demo.exceptions.EdificioException;
-import com.example.demo.exceptions.PersonaException;
-import com.example.demo.exceptions.ReclamoException;
-import com.example.demo.exceptions.UnidadException;
-import com.example.demo.model.Administrador;
-import com.example.demo.model.Edificio;
-import com.example.demo.model.Persona;
-import com.example.demo.model.Reclamo;
-import com.example.demo.views.Estado;
-
-
 
 @SpringBootTest
 @Transactional

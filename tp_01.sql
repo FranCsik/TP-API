@@ -2,7 +2,7 @@ create table edificios(
 	codigo int not null identity,
 	nombre varchar(100) not null,
 	direccion varchar(100) not null,
-	constraint pk_edificios primary key (codigo) ON DELETE CASCADE;
+	constraint pk_edificios primary key (codigo)
 )
 
 insert into edificios (nombre, direccion) values ('SLS Puerto Madero','Mogliani 425')
