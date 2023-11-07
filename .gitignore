@@ -1,2 +1,10 @@
 node_modules
 .next
+
+## Configuracion BD
+backend/src/main/resources/application.properties
+*.properties
+.properties
+
+# Ignorar el archivo application.properties
+application.properties
