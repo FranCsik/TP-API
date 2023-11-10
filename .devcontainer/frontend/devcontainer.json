@@ -3,5 +3,13 @@
 	"dockerComposeFile": "../../compose.yaml",
 	"service": "frontend",
 	"workspaceFolder": "/app",
-	"overrideCommand": true
+	"overrideCommand": true,
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"burkeholland.simple-react-snippets",
+				"GitHub.copilot"
+			]
+		}
+	}
 }

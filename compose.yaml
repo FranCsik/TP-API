@@ -5,10 +5,10 @@ services:
     working_dir: /app
     expose:
       - 80
-    networks:
-      - backend
     volumes:
       - ./backend:/app
+    command: gradle bootRun
+
   sql:
     image: mcr.microsoft.com/mssql/server:2022-CU7-ubuntu-20.04
     environment:
@@ -19,20 +19,13 @@ services:
       - "1433:1433"
     expose:
       - 1433
-    networks:
-      - backend
-    # volumes:
-    #   - ./:/docker-entrypoint-initdb.d
+    volumes:
+      - db:/var/opt/mssql
   frontend:
     image: node:20.0.0
     working_dir: /app
-    # expose:
-    #   - 80
-    networks:
-      - backend
-      - default
     volumes:
       - ./frontend:/app
 
-networks:
-  backend:
+volumes:
+  db:
