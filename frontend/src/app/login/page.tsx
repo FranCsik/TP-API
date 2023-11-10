@@ -1,32 +1,50 @@
-'use client'
-import { useRouter } from "next/navigation"
-export default function Login(){
+'use client';
 
-    const router = useRouter()
+import { Button, Checkbox, Label, TextInput } from 'flowbite-react';
+import { useState } from 'react';
 
-    // async function get_persona(){
-    //     let prueba = await fetch("http://backend/personas")
-    //     let hola = prueba.json()
-    //     console.log(hola)
-    // }
+export default function Login() {
 
-    // get_persona()
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
 
+    async function login(){
+        //TODO: Agregue un proxy en el package.json para que no tenga que poner el dominio completo
+        let response = await fetch("/api/personas")
+        // let response = await fetch('/api/login', {
+        //     method: 'POST',
+        //     headers: {
+        //         'Content-Type': 'application/json'
+        //     },
+        //     body: JSON.stringify({email: email, password: password})
+        // })
+        let data = await response.json();
+        console.log(data)
+    } 
 
-    return(
-            <div className="flex flex-col h-screen w-full items-center justify-center">
-                <form action="post" className="flex flex-col gap-4 bg-slate-800 rounded-xl shadow-2xl w-1/4 p-2 h-2/4 items-center justify-center">
-                    <h2 className="text-2xl font-bold">Login</h2>
-                    <div className="flex flex-col gap-2">
-                        <label htmlFor="usuario">Usuario</label>
-                        <input id="usuario" name="usuario" type="text" placeholder="Ingresa tu usuario"/>
+  return (
+    <>  
+        <main className="flex justify-center items-center h-full w-full">
+            <form className="flex max-w-md flex-col gap-4 p-6 rounded-3xl bg-gray-100 w-[700px]">
+                <div>
+                    <div className="mb-2 block">
+                    <Label htmlFor="email1" value="Email" />
                     </div>
-                    <div className="flex flex-col gap-2">
-                        <label htmlFor="password">Contraseña</label>
-                        <input id="password" name="password" type="password" placeholder="Ingresa tu contraseña"/>
+                    <TextInput id="email1" type="email" placeholder="Ingrese su email" required value={email} onChange={(e) => {setEmail(e.target.value)}} />
+                </div>
+                <div>
+                    <div className="mb-2 block">
+                    <Label htmlFor="password1" value="Contraseña" />
                     </div>
-                    <button onClick={() => { router.push("/") } }>Login</button>
-                </form>
-            </div>
-    )
+                    <TextInput id="password1" type="password" required value={password} onChange={(e) => {setPassword(e.target.value)}} />
+                </div>
+                <div className="flex items-center gap-2">
+                    <Checkbox id="remember" />
+                    <Label htmlFor="remember">Remember me</Label>
+                </div>
+                <Button onClick={() => {login()}} type="submit">Submit</Button>
+            </form>
+        </main>
+    </>
+  );
 }
