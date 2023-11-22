@@ -1,0 +1,50 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background-color: #b4b9da;
+}
+
+
+.bienvenida{
+    margin-top: 50px;
+}
+
+.parrafo-bienvenida {
+    text-align: justify;
+    margin: 50px auto;
+    max-width: 60%;
+    padding: 2%;
+    background-color: rgb(85, 85, 126);
+    color: beige;
+    border-radius: 20px;
+}
+
+.container {
+    max-width: 600px;
+    margin: 80px auto;
+    display: flex;
+    justify-content: space-around;
+}
+.text-button-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+}
+.text {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+.button {
+    margin-top: 15px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: rgb(30, 48, 97);
+    border-radius: 10px;
+    color:beige;
+}
+
+.text-button-container + .text-button-container {
+    margin-left: 20%;
+}

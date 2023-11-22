@@ -268,16 +268,16 @@ public class Controlador {
 		return reclamoNuevo;
 	}
 
-	public boolean login(String documento, String password){
+	public PersonaView login(String documento, String password) throws Exception{
 		//TODO: Se debe agregar capa de seguridad, y tirar un request con mail y contraseña?
 
 		Optional<Persona> persona = personaRepository.findById(documento);
 		if (persona.isPresent()){
 			if (persona.get().getPassword().equals(password)){
-				return true;
+				return persona.get().toPersonaView();
 			}
 		}
-		return false;
+		throw new Exception("Las credenciales son invalidas");
 	}
 
 	public void eliminarReclamo(Reclamo reclamo){

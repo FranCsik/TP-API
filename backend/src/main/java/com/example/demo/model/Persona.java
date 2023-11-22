@@ -68,4 +68,8 @@ public class Persona {
 	public PersonaCreateView toCreateView() {
 		return new PersonaCreateView(documento, nombre, password, mail);
 	}
+
+	public PersonaView toPersonaView() {
+		return new PersonaView(documento, nombre);
+	}
 }

@@ -3,6 +3,8 @@ services:
   backend:
     image: gradle:8.3.0-jdk17
     working_dir: /app
+    ports:
+      - "80:80"
     expose:
       - 80
     volumes:
