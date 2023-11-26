@@ -9,7 +9,7 @@ function Unidades(){
     const [edificio, setEdificio] = useState([]);
     useEffect(() => {
         console.log(params.id + " PARAMS");
-        const url = "http://localhost:8080/edificios/" + params.id;
+        const url = "http://localhost/edificios/" + params.id;
         fetch(url)
             .then(res => res.json())
             .then(res => {
@@ -26,7 +26,7 @@ function Unidades(){
 
     const [unidades, setUnidades] = useState([]);
     useEffect(() => {
-        const url = "http://localhost:8080/edificios/" + params.id + "/unidades";
+        const url = "http://localhost/edificios/" + params.id + "/unidades";
         fetch(url).then(res => res.json()).
             then(res => {
                 setUnidades(res);

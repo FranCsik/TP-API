@@ -21,8 +21,6 @@ function ReclamoComponente(){
   //ver lo de imagenes
   const [reclamo, setReclamo] = useState({documento:usuario.documento, codigoEdificio:'', ubicacion:'', descripcion:'', unidad:unidad, estado:'nuevo'});
 
-
-
   const manejarCambioEntradaUnidad = (e) => {
     const nuevoValor = e.target.value;
   

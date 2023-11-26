@@ -6,7 +6,7 @@ function Edificios(){
 
     const [edificios, setEdificios] = useState([]);
     useEffect(() => {
-        const url = "http://localhost:8080/edificios";
+        const url = "http://localhost/edificios";
         fetch(url).then(res => res.json()).then(res => setEdificios(res));
     },[]);
 
@@ -27,7 +27,7 @@ function Edificios(){
 
     const eliminarBoton = (e, id) => {
         e.preventDefault();
-        const url = "http://localhost:8080/edificios/borrar";
+        const url = "http://localhost/edificios/borrar";
         fetch(url, {
             method: 'POST',
             headers: {'Content-Type':'application/json'},
@@ -41,7 +41,7 @@ function Edificios(){
 
     const crearBoton = (e) => {
         e.preventDefault();
-        const url = "http://localhost:8080/edificios/crear";
+        const url = "http://localhost/edificios/crear";
         fetch(url, {
             method: 'POST',
             headers: {'Content-Type':'application/json'},

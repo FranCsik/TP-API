@@ -120,4 +120,16 @@ public class UnidadController {
 	public UnidadView deshabitarUnidad(@PathVariable int codigo, @PathVariable String piso, @PathVariable String numero) throws UnidadException {
 		return controlador.deshabitarUnidad(controlador.buscarUnidad(codigo, piso, numero)).toView();
 	}
+
+	@CrossOrigin
+	@DeleteMapping("/unidades/codigo={codigo}&piso={piso}&numero={numero}/eliminarInquilino/{documento}")
+	public UnidadView eliminarInquilinoUnidad(@PathVariable int codigo, @PathVariable String piso, @PathVariable String numero, @PathVariable String documento) throws UnidadException, PersonaException {
+		return controlador.eliminarInquilinoUnidad(controlador.buscarUnidad(codigo, piso, numero), controlador.buscarPersona(documento)).toView();
+	}
+
+	@CrossOrigin
+	@DeleteMapping("/unidades/codigo={codigo}&piso={piso}&numero={numero}/eliminarDuenio/{documento}")
+	public UnidadView eliminarDuenioUnidad(@PathVariable int codigo, @PathVariable String piso, @PathVariable String numero, @PathVariable String documento) throws UnidadException, PersonaException {
+		return controlador.eliminarDuenioUnidad(controlador.buscarUnidad(codigo, piso, numero), controlador.buscarPersona(documento)).toView();
+	}
 }

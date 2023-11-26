@@ -5,45 +5,35 @@ import { useParams } from 'react-router-dom';
 function Unidad(){
 
     const params = useParams();
-    
-    const [inquilinos, setInquilinos] = useState([]);
-    const [propietarios, setPropietarios] = useState([]);
-    const [personas, setPersonas] = useState([{"documento": "66666", "nombre": "The Punisher"}, {"documento": "11111", "nombre": "Duki"}, {"documento": "123456", "nombre": "Juan Perez"}, {"documento": "5555", "nombre": "Lionel Messi"}, {"documento": "123456", "nombre": "Juan Perez"}, {"documento": "5555", "nombre": "Andres"}]);
-    const [habitado, setHabitado] = useState("No habitado");
-    const [unidad, setUnidad] = useState([]);
-   
-    useEffect(() => {
-        const url = `http://localhost:8080/unidades/codigo=${params.codigo}&piso=${params.piso}&numero=${params.numero}`;
-        fetch(url)
-            .then(res => res.json())
-            .then(res => {
-                if(res.hasOwnProperty('error')){
-                    alert(res.message);
-                    window.location.replace("http://localhost:3000/edificios");
-                } else {
-                    setUnidad(res);
-                    setInquilinos(res.inquilinos);
-                    setPropietarios(res.duenios);
-                    if(res.habitado){
-                        setHabitado("Habitado");
-                    }
-                }
-            });
-    },[]);
 
+    const [personas, setPersonas] = useState([]);
+    const [inquilinos, setInquilinos] = useState([]);
+    const [duenios, setDuenios] = useState([]);
+    const [habitado, setHabitado] = useState(false);
+    const [loading, setLoading] = useState(true);
+    
     useEffect(() => {
-        const url = `http://localhost:8080/personas`;
-        fetch(url)
-            .then(res => res.json())
-            .then(res => {
-                if(res.hasOwnProperty('error')){
-                    alert(res.message);
-                    window.location.replace("http://localhost:3000/edificios");
-                } else {
-                    setPersonas(res);
-                }
-            })
-    });
+        const fetchUnidad = async () => {
+            let response = await fetch(`http://localhost/unidades/codigo=${params.codigo}&piso=${params.piso}&numero=${params.numero}`)
+            let unidad = await response.json();
+            setInquilinos(unidad.inquilinos);
+            setDuenios(unidad.duenios);
+            setHabitado(unidad.habitado);
+        }
+        const fetchPersonas = async ()  => {
+            let response = await fetch(`http://localhost/personas`)
+            setPersonas(await response.json());
+        }
+
+        const fetchAll = async () => {
+            await fetchUnidad();
+            await fetchPersonas();
+            setLoading(false);
+
+        }
+        fetchAll();
+        
+    }, [loading]);
 
     
     const [form , setForm] = useState({
@@ -66,116 +56,125 @@ function Unidad(){
 
     }
 
-    const agregarInquilino = (e) => {
+    const eliminarInquilino = async (e, inquilino) => {
         e.preventDefault();
-        if (inquilinos.length == 0) {
-            const url = `http://localhost:8080/unidades/codigo=${unidad.edificio.codigo}&piso=${unidad.piso}&numero=${unidad.numero}/alquilar`;
-            fetch(url, {
-                method: 'POST',
-                headers: {'Content-Type':'application/json'},
-                body: JSON.stringify([{
-                    documento: form.dniInquilino,
-                }])
-                
-            }
-            ).then( () => {
-                alert("Unidad alquilada");
-                window.location.reload();
-            })
-        } else {
-           const url = `http://localhost:8080/unidades/codigo=${unidad.edificio.codigo}&piso=${unidad.piso}&numero=${unidad.numero}/agregarInquilino/${form.dniInquilino}`;
-           fetch(url, {
+
+        let response = await fetch(`http://localhost/unidades/codigo=${params.codigo}&piso=${params.piso}&numero=${params.numero}/eliminarInquilino/${inquilino.documento}`,{
+            method: 'DELETE',
+            headers: {'Content-Type':'application/json'},
+        })
+        let unidad = await response.json();
+        setInquilinos(unidad.inquilinos);
+        alert("Inquilino eliminado");
+    }
+
+    const eliminarDuenio = async (e, propietario) => {
+        e.preventDefault();
+
+        let response = await fetch(`http://localhost/unidades/codigo=${params.codigo}&piso=${params.piso}&numero=${params.numero}/eliminarDuenio/${propietario.documento}`,{
+            method: 'DELETE',
+            headers: {'Content-Type':'application/json'},
+        })
+        let unidad = await response.json();
+        setDuenios(unidad.duenios);
+        alert("Propietario eliminado");
+    }
+
+    const agregarInquilino = async (e) => {
+        e.preventDefault();
+        if (!habitado){
+            alert("La unidad no está alquilada");
+            return;
+        }
+        let response = await fetch(`http://localhost/unidades/codigo=${params.codigo}&piso=${params.piso}&numero=${params.numero}/agregarInquilino/${form.dniInquilino}`,{
             method: 'POST',
             headers: {'Content-Type':'application/json'},
-            body: JSON.stringify({})
-            }
-            ).then( () => {
-                alert("Unidad alquilada");
-                window.location.reload();
-            })
-        }
+        });
+        let unidad = await response.json();
+        setInquilinos(unidad.inquilinos)
+        alert("Unidad Alquilada");
+    }
 
+    const agregarPropietario = async (e) => {
+        e.preventDefault();
+
+        let response = await fetch(`http://localhost/unidades/codigo=${params.codigo}&piso=${params.piso}&numero=${params.numero}/agregarDuenio/${form.dniPropietario}`,{
+            method: 'POST',
+            headers: {'Content-Type':'application/json'},
+        })
+        let unidad = await response.json();
+        setDuenios(unidad.duenios);
+        alert("Propietario agregado");
 
     }
 
-    const agregarPropietario = (e, dni) => {
+    const transferirUnidad = async (e) => {
         e.preventDefault();
-        const url = `http://localhost:8080/unidades/codigo=${unidad.edificio.codigo}&piso=${unidad.piso}&numero=${unidad.numero}/agregarDuenio/${dni}`;
-        fetch(url, {
-         method: 'POST',
-         headers: {'Content-Type':'application/json', 'Access-Control-Allow-Origin': 'no-cors'},
-         body: JSON.stringify({})
-         }
-         ).then( () => {
-             alert("Propietario agregado");
-             window.location.reload();
-         })
-
-    }
-
-    const transferirUnidad = (e, dni) => {
-        e.preventDefault();
-        const url = `http://localhost:8080/unidades/codigo=${unidad.edificio.codigo}&piso=${unidad.piso}&numero=${unidad.numero}/transferir`;
-        fetch(url, {
+        console.log(form.dniPropietario)
+        let response = await fetch(`http://localhost/unidades/codigo=${params.codigo}&piso=${params.piso}&numero=${params.numero}/transferir`,{
             method: 'POST',
             headers: {'Content-Type':'application/json'},
             body: JSON.stringify([{
-                documento: dni
+                documento: form.dniPropietario
             }])
-        }
-        ).then( () => {
-            alert("Unidad transferida");
-            window.location.reload();
         })
+        let unidad = await response.json();
+        setDuenios(unidad.duenios);
+        alert("Unidad transferida");
     }
 
-    const liberarUnidad = (e, unidad) => {
+    const liberarUnidad = async (e) => {
         e.preventDefault();
-        const url = `http://localhost:8080/unidades/codigo=${unidad.edificio.codigo}&piso=${unidad.piso}&numero=${unidad.numero}/liberar`;
-        fetch(url, {
+        let response = await fetch(`http://localhost/unidades/codigo=${params.codigo}&piso=${params.piso}&numero=${params.numero}/liberar`,{
             method: 'POST',
             headers: {'Content-Type':'application/json'},
             body: JSON.stringify({
-                codigo: unidad.edificio.codigo,
-                piso: unidad.piso,
-                numero: unidad.numero
+                codigo: params.codigo,
+                piso: params.piso,
+                numero: params.numero
             })
-        }
-        ).then( () => {
-            alert("Unidad liberada");
-            window.location.reload();
         })
+        let unidad = await response.json();
+        setHabitado(unidad.habitado);
+        alert("Unidad liberada");
     }
 
-    const habitarUnidad = (e, unidad) => {
+    const habitarUnidad = async (e) => {
         e.preventDefault();
-        const url = `http://localhost:8080/unidades/codigo=${unidad.edificio.codigo}&piso=${unidad.piso}&numero=${unidad.numero}/habitar`;
-        fetch(url, {
+
+        let response = await fetch(`http://localhost/unidades/codigo=${params.codigo}&piso=${params.piso}&numero=${params.numero}/habitar`,{
             method: 'POST',
             headers: {'Content-Type':'application/json'},
             body: JSON.stringify({
-                codigo: unidad.edificio.codigo,
-                piso: unidad.piso,
-                numero: unidad.numero
+                codigo: params.codigo,
+                piso: params.piso,
+                numero: params.numero
             })
-        }
-        ).then( () => {
-            alert("Unidad habitada");
-            window.location.reload();
         })
+        let unidad = await response.json();
+        setHabitado(unidad.habitado);
+        alert("Unidad habitada");
+    }
+
+    function habitadoToString(habitado) {
+        if (habitado) {
+            return "Habitado";
+        } else {
+            return "Desocupado";
+        }
     }
 
     return(
         <div>
-        <h1 className="text-center my-3 pb-3">Edificio {params.codigo}, piso {params.piso}, número {params.numero} ({habitado})</h1>
+        <h1 className="text-center my-3 pb-3">Edificio {params.codigo}, piso {params.piso}, número {params.numero} ({habitadoToString(habitado)})</h1>
 
-            <div class="container">
-                <div class="row">
-                    <div class="col-6">
-                        <button type="submit" className="btn btn-primary w-100" onClick={ (e) => {liberarUnidad(e, unidad)}}>Liberar</button>
+            <div className="container">
+                <div className="row">
+                    <div className="col-6">
+                        <button type="submit" className="btn btn-primary w-100" onClick={ (e) => {liberarUnidad(e)}}>Liberar</button>
                     </div>
-                    <div class="col-6">
-                        <button type="submit" className="btn btn btn-secondary w-100" onClick={ (e) => {habitarUnidad(e, unidad)} }>Habitar</button>
+                    <div className="col-6">
+                        <button type="submit" className="btn btn btn-secondary w-100" onClick={ (e) => {habitarUnidad(e)} }>Alquilar</button>
                     </div>
                 </div>
             </div>
@@ -190,7 +189,7 @@ function Unidad(){
                 <div className="row d-flex justify-content-center align-items-center h-100">
                 <div className="col col-lg-12 col-xl-8">
                     <div className="card rounded-3">
-                    <div className="card-body p-">
+                    <div className="card-body ">
 
                         <h2 className="text-center my-3 pb-3">Inquilinos</h2>
 
@@ -198,29 +197,34 @@ function Unidad(){
                         <table className="table mb-3">
                         <thead>
                             <tr>
-                            <th scope="col">DNI</th>
-                            <th scope="col">Nombre</th>
-                            <th scope="col">Acciones</th>
+                                <th scope="col">DNI</th>
+                                <th scope="col">Nombre</th>
+                                <th scope="col">Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
 
                             {inquilinos.map((inquilino) => (
-                                <tr>
-                                    <th scope="row">{inquilino.documento}</th>
-                                    <td>{inquilino.nombre}</td>
-                                    <td>
-                                        <button type="submit" className="btn btn btn-primary ms-1" onClick={ (e) => unidadesBoton(e, inquilino.documento) }>Ver Persona</button>
-                                    </td>
-                                </tr>
-                            ))}
+                                    <tr>
+                                        <th scope="row">{inquilino.documento}</th>
+                                        <td>{inquilino.nombre}</td>
+                                        <td>
+                                            <button type="submit" className="btn btn btn-primary ms-1" onClick={ (e) => unidadesBoton(e, inquilino.documento) }>Ver</button>
+                                            <button type="submit" className="btn btn btn-danger ms-1" onClick={ (e) => eliminarInquilino(e, inquilino)}>Eliminar</button>
+                                        </td>
+                                    </tr>
+                                ))
+                            }
+
+            
 
                             <tr>        
                                     <th scope="row">#</th>
                                     <td>
-                                    <select class="form-control" id="dniInquilino" name="dniInquilino" onChange={manejoDatos} >
+                                    <select className="form-control" id="dniInquilino" name="dniInquilino" onChange={manejoDatos} >
                                             <option disabled selected={true}>Seleccione un inquilino</option>
-                                        {personas.map((persona) => (
+                                        {personas && 
+                                            personas.map((persona) => (
                                             <option value={persona.documento}>{persona.nombre}, {persona.documento}</option>
                                         ))}
                                         
@@ -266,12 +270,13 @@ function Unidad(){
                         </thead>
                         <tbody>
 
-                            {propietarios.map((propietario) => (
+                            {duenios.map((propietario) => (
                                 <tr>
                                     <th scope="row">{propietario.documento}</th>
                                     <td>{propietario.nombre}</td>
                                     <td>
-                                        <button type="submit" className="btn btn btn-primary ms-1" onClick={ (e) => unidadesBoton(e, propietario.documento) }>Ver Persona</button>
+                                        <button type="submit" className="btn btn btn-primary ms-1" onClick={ (e) => unidadesBoton(e, propietario.documento) }>Ver</button>
+                                        <button type="submit" className="btn btn btn-danger ms-1" onClick={ (e) => eliminarDuenio(e, propietario)}>Eliminar</button>
                                     </td>
                                 </tr>
                             ))}
@@ -279,7 +284,7 @@ function Unidad(){
                             <tr>        
                                     <th scope="row">#</th>
                                     <td>
-                                    <select class="form-control" id="dniPropietario" name="dniPropietario" onChange={manejoDatos}>
+                                    <select className="form-control" id="dniPropietario" name="dniPropietario" onChange={manejoDatos}>
                                             <option disabled selected={true}>Seleccione un propietario</option>
                                         {personas.map((persona) => (
                                             <option value={persona.documento}>{persona.nombre}, {persona.documento}</option>
@@ -289,8 +294,8 @@ function Unidad(){
                                     </td>
 
                                     <td>
-                                        <button type="submit" className="btn btn-success ms-1" onClick={ (e) => agregarPropietario(e, form.dniPropietario)}>Agregar</button>
-                                        <button type="submit" className="btn btn-secondary" onClick={ (e) => transferirUnidad(e, form.dniPropietario) }>Transferir</button>
+                                        <button type="submit" className="btn btn-success ms-1" onClick={ (e) => agregarPropietario(e)}>Agregar</button>
+                                        <button type="submit" className="btn btn-secondary" onClick={ (e) => transferirUnidad(e) }>Transferir</button>
                                     </td>
                                 </tr>
                 

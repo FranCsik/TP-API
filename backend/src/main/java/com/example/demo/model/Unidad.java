@@ -1,8 +1,9 @@
 package com.example.demo.model;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-
+import java.util.Set;
 
 import org.hibernate.type.YesNoConverter;
 
@@ -166,5 +167,24 @@ public class Unidad {
 
 	public void setInquilinos(List<Persona> inquilinos) {
 		this.inquilinos = inquilinos;
+	}
+
+	public void eliminarInquilino(Persona inquilino) {
+		inquilinos.remove(inquilino);
+	}
+
+	public void eliminarDuenio(Persona duenio) {
+		duenios.remove(duenio);
+	}
+
+	public List<Persona> habilitados(){
+		Set<Persona> habilitados = new HashSet<Persona>();
+		for(Persona persona : getDuenios()) {
+			habilitados.add(persona);
+		}
+		for(Persona persona : getInquilinos()) {
+			habilitados.add(persona);
+		}
+		return new ArrayList<Persona>(habilitados);
 	}
 }

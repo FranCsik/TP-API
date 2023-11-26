@@ -67,4 +67,10 @@ public class PersonaController {
 		
 	}
 
+	@CrossOrigin
+	@GetMapping("/personas/{documento}/edificios")
+	public List<EdificioView> edificiosPorPersona(@PathVariable String documento) throws PersonaException{
+		return controlador.devolverListaEdificiosView(controlador.edificiosPorPersona(controlador.buscarPersona(documento)));
+	}
+
 }

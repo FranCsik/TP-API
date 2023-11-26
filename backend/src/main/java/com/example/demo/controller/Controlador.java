@@ -398,4 +398,61 @@ public class Controlador {
 	public void eliminarUnidad(Unidad unidad){
 		unidadRepository.delete( unidad );
 	}
+
+	public Unidad eliminarInquilinoUnidad(Unidad unidad, Persona inquilino) throws UnidadException, PersonaException {
+		unidad.eliminarInquilino(inquilino);
+		unidadRepository.save(unidad);
+		return unidad;
+	}
+
+	public Unidad eliminarDuenioUnidad(Unidad unidad, Persona duenio) throws UnidadException, PersonaException {
+		unidad.eliminarDuenio(duenio);
+		unidadRepository.save(unidad);
+		return unidad;
+	}
+
+	public List<Edificio> edificiosPorPersona(Persona persona) throws PersonaException{
+		List<Edificio> resultado = new ArrayList<Edificio>();
+		List<Edificio> edificios = edificioRepository.findAll();
+		for(Edificio edificio : edificios){
+			if (edificio.habilitados().contains(persona)){
+				resultado.add(edificio);
+			}
+		}
+		return resultado;
+	}
+
+	public List<EdificioView> devolverListaEdificiosView(List<Edificio> edificios){
+		List<EdificioView> resultado = new ArrayList<EdificioView>();
+		for(Edificio edificio : edificios)
+			resultado.add(edificio.toView());
+		return resultado;
+	}
+
+	public List<Reclamo> misReclamos(Edificio edificio, Persona persona){
+
+		List<Unidad> unidades = getUnidadesPorPersonaEnEdificio(edificio,persona);
+		List<Reclamo> resultado = new ArrayList<Reclamo>();
+		List<Reclamo> reclamos = reclamoRepository.findByEdificio(edificio);
+		for(Reclamo reclamo : reclamos){
+			if (unidades.contains(reclamo.getUnidad())){
+				resultado.add(reclamo);
+			}
+			if (reclamo.getUnidad() == null){
+				resultado.add(reclamo);
+			}
+		}
+		return resultado;
+	}
+
+	public List<Unidad> getUnidadesPorPersonaEnEdificio(Edificio edificio, Persona persona){
+		List<Unidad> resultado = new ArrayList<Unidad>();
+		List<Unidad> unidades = edificio.getUnidades();
+		for(Unidad unidad : unidades){
+			if (unidad.habilitados().contains(persona)){
+				resultado.add(unidad);
+			}
+		}
+		return resultado;
+	}
 }

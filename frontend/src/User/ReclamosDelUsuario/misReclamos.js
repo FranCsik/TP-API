@@ -15,6 +15,7 @@ function MisReclamosComponente(){
     const usuario = location.state && location.state.usuario;
     //const usuario = useState({documento:persona.documento});
     const [reclamos, setReclamos] = useState([]);
+    const [loading, setLoading] = useState(true);
 
 
 
@@ -32,13 +33,13 @@ const obtenerReclamosPorPersona = async () => {
 
 useEffect( () => {
     obtenerReclamosPorPersona()
-}, [])
+}, [loading])
     
     return(
         <div className='PantallaMiEdificio'>
-        <NavBarComponente/>
-        <div className='cuerpo'>
-            <h2 className='tituloReclamos'>Mis Reclamos</h2>
+            <NavBarComponente/>
+            <div className='cuerpo'>
+                <h2 className='tituloReclamos'>Mis Reclamos</h2>
                 <div className='tabla-reclamos'>
                     {reclamos.length > 0 && (
                         <table border="1">

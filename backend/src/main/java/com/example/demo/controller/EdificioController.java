@@ -121,4 +121,17 @@ public class EdificioController {
 		return edificioActualizado.toView();
 	}
 
+	@CrossOrigin
+	@GetMapping("/edificios/{codigo}/reclamos/{documento}")
+	public List<ReclamoView> misReclamos(@PathVariable int codigo, @PathVariable String documento) throws EdificioException, PersonaException{
+		Edificio edificio = controlador.buscarEdificio(codigo);
+		Persona persona = controlador.buscarPersona(documento);
+		List<Reclamo> reclamos = controlador.misReclamos(edificio, persona);
+		List<ReclamoView> resultado = new ArrayList<ReclamoView>();
+		for (Reclamo reclamo : reclamos) {
+			resultado.add(reclamo.toView());
+		}
+		return resultado;
+	}
+
 }
