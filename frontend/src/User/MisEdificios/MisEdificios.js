@@ -9,17 +9,11 @@ import NavBarComponente from '../navbar/navbar';
 
 function MisEdificiosComponente(){
 
-    const navigate = useNavigate();
-    const location = useLocation();
-    const usuario = location.state && location.state.usuario;
+    const usuario = JSON.parse(localStorage.getItem('usuario'));
 
     const [loading, setLoading] = useState(true);
 
     const [edificios, setEdificios] = useState([]);
-
-    function navegarReclamos(edificio){
-        navigate(`/mis-edificios/${edificio.codigo}/reclamos`, { state: { usuario: usuario, edificio: edificio} });
-    }
     
     useEffect( () => {
 
@@ -67,7 +61,7 @@ function MisEdificiosComponente(){
                                             <td className='p-2'>{edificio.nombre}</td>
                                             <td className='p-2'>{edificio.direccion}</td>
                                             <td className='p-2'>
-                                                <button type="submit" className="btn btn btn-primary ms-1" onClick={ (e) => {navegarReclamos(edificio)} }>Ver</button>
+                                                <a href={`/mis-edificios/${edificio.codigo}/reclamos`} className='btn btn btn-primary ms-1'>Ver</a>
                                             </td>
                                             
                                         </tr>

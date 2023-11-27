@@ -1,26 +1,39 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useLocation } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 function MisEdificiosComponente(){
 
-    const location = useLocation();
-    const usuario = location.state && location.state.usuario;
-    const edificio = location.state && location.state.edificio;
+    const usuario = JSON.parse(localStorage.getItem('usuario'));
+
+    const [edificio, setEdificio] = useState({});
+
+    const params = useParams();
+
 
     const [reclamos, setReclamos] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect( () => {
         const fetchReclamos = async () => {
-            let response = await fetch(`http://localhost/edificios/${edificio.codigo}/reclamos/${usuario.documento}`);
+            let response = await fetch(`http://localhost/edificios/${params.codigoEdificio}/reclamos/${usuario.documento}`);
             let data = await response.json();
             setReclamos(data);
+            
+        }
+        const fetchEdificio = async () => {
+            let response = await fetch(`http://localhost/edificios/${params.codigoEdificio}`);
+            let data = await response.json();
+            setEdificio(data);
+        }
+
+        const fetchAll = async () => {
+            await fetchReclamos();
+            await fetchEdificio();
             setLoading(false);
         }
-        fetchReclamos();
+        fetchAll();
     }, [loading])
 
 

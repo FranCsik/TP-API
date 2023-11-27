@@ -1,27 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import './Home.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Link, useNavigate } from 'react-router-dom';
-import { useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import NavBarComponente from '../navbar/navbar';
 
 function HomeComponente(){
 
-    const navigate = useNavigate();
-    const location = useLocation();
-
-    const usuario = location.state && location.state.usuario;
+    // const navigate = useNavigate();
+    const usuario = JSON.parse(localStorage.getItem('usuario'));
      
 
     //Si toca el boton para Reportar desperfecto en una unidad en particular
-    function ReclamarUnidad(){
-        navigate('/reclamo-unidad', { state: { usuario: usuario } });
-    }
+    // function ReclamarUnidad(){
+    //     navigate('/reclamo-unidad');
+    // }
 
-    //Si toca el boton para Reportar desperfecto en una parte comunitaria
-    function ReclamarComun(){
-        navigate('/reclamo-comun', { state: { usuario: usuario } });
-    }
+    // //Si toca el boton para Reportar desperfecto en una parte comunitaria
+    // function ReclamarComun(){
+    //     navigate('/reclamo-comun');
+    // }
 
     return(
         <div className='Home'>
@@ -42,12 +39,12 @@ function HomeComponente(){
                 <div className="container">
                     <div className="text-button-container">
                         <div className="text">Reportar desperfecto en una unidad en particular</div>
-                        <button id="button1" className="button" onClick={ReclamarUnidad}>Reclamar</button>
+                        <a className='button' href='/reclamo-unidad'>Reclamar</a>
                     </div>
 
                     <div className="text-button-container">
                             <div className="text">Reportar desperfecto en una parte comunitaria</div>
-                            <button id="button2" className="button" onClick={ReclamarComun}>Reclamar</button>
+                            <a className='button' href='/reclamo-comun'>Reclamar</a>
                     </div>
                 </div>
             </div>

@@ -14,7 +14,7 @@ function Unidad(){
     
     useEffect(() => {
         const fetchUnidad = async () => {
-            let response = await fetch(`http://localhost/unidades/codigo=${params.codigo}&piso=${params.piso}&numero=${params.numero}`)
+            let response = await fetch(`http://localhost/unidades/codigo=${params.codigoEdificio}&piso=${params.piso}&numero=${params.numero}`)
             let unidad = await response.json();
             setInquilinos(unidad.inquilinos);
             setDuenios(unidad.duenios);
@@ -59,7 +59,7 @@ function Unidad(){
     const eliminarInquilino = async (e, inquilino) => {
         e.preventDefault();
 
-        let response = await fetch(`http://localhost/unidades/codigo=${params.codigo}&piso=${params.piso}&numero=${params.numero}/eliminarInquilino/${inquilino.documento}`,{
+        let response = await fetch(`http://localhost/unidades/codigo=${params.codigoEdificio}&piso=${params.piso}&numero=${params.numero}/eliminarInquilino/${inquilino.documento}`,{
             method: 'DELETE',
             headers: {'Content-Type':'application/json'},
         })
@@ -71,7 +71,7 @@ function Unidad(){
     const eliminarDuenio = async (e, propietario) => {
         e.preventDefault();
 
-        let response = await fetch(`http://localhost/unidades/codigo=${params.codigo}&piso=${params.piso}&numero=${params.numero}/eliminarDuenio/${propietario.documento}`,{
+        let response = await fetch(`http://localhost/unidades/codigo=${params.codigoEdificio}&piso=${params.piso}&numero=${params.numero}/eliminarDuenio/${propietario.documento}`,{
             method: 'DELETE',
             headers: {'Content-Type':'application/json'},
         })
@@ -86,7 +86,7 @@ function Unidad(){
             alert("La unidad no está alquilada");
             return;
         }
-        let response = await fetch(`http://localhost/unidades/codigo=${params.codigo}&piso=${params.piso}&numero=${params.numero}/agregarInquilino/${form.dniInquilino}`,{
+        let response = await fetch(`http://localhost/unidades/codigo=${params.codigoEdificio}&piso=${params.piso}&numero=${params.numero}/agregarInquilino/${form.dniInquilino}`,{
             method: 'POST',
             headers: {'Content-Type':'application/json'},
         });
@@ -98,7 +98,7 @@ function Unidad(){
     const agregarPropietario = async (e) => {
         e.preventDefault();
 
-        let response = await fetch(`http://localhost/unidades/codigo=${params.codigo}&piso=${params.piso}&numero=${params.numero}/agregarDuenio/${form.dniPropietario}`,{
+        let response = await fetch(`http://localhost/unidades/codigo=${params.codigoEdificio}&piso=${params.piso}&numero=${params.numero}/agregarDuenio/${form.dniPropietario}`,{
             method: 'POST',
             headers: {'Content-Type':'application/json'},
         })
@@ -111,7 +111,7 @@ function Unidad(){
     const transferirUnidad = async (e) => {
         e.preventDefault();
         console.log(form.dniPropietario)
-        let response = await fetch(`http://localhost/unidades/codigo=${params.codigo}&piso=${params.piso}&numero=${params.numero}/transferir`,{
+        let response = await fetch(`http://localhost/unidades/codigo=${params.codigoEdificio}&piso=${params.piso}&numero=${params.numero}/transferir`,{
             method: 'POST',
             headers: {'Content-Type':'application/json'},
             body: JSON.stringify([{
@@ -125,7 +125,7 @@ function Unidad(){
 
     const liberarUnidad = async (e) => {
         e.preventDefault();
-        let response = await fetch(`http://localhost/unidades/codigo=${params.codigo}&piso=${params.piso}&numero=${params.numero}/liberar`,{
+        let response = await fetch(`http://localhost/unidades/codigo=${params.codigoEdificio}&piso=${params.piso}&numero=${params.numero}/liberar`,{
             method: 'POST',
             headers: {'Content-Type':'application/json'},
             body: JSON.stringify({
@@ -142,7 +142,7 @@ function Unidad(){
     const habitarUnidad = async (e) => {
         e.preventDefault();
 
-        let response = await fetch(`http://localhost/unidades/codigo=${params.codigo}&piso=${params.piso}&numero=${params.numero}/habitar`,{
+        let response = await fetch(`http://localhost/unidades/codigo=${params.codigoEdificio}&piso=${params.piso}&numero=${params.numero}/habitar`,{
             method: 'POST',
             headers: {'Content-Type':'application/json'},
             body: JSON.stringify({
@@ -166,7 +166,7 @@ function Unidad(){
 
     return(
         <div>
-        <h1 className="text-center my-3 pb-3">Edificio {params.codigo}, piso {params.piso}, número {params.numero} ({habitadoToString(habitado)})</h1>
+        <h1 className="text-center my-3 pb-3">Edificio {params.codigoEdificio}, piso {params.piso}, número {params.numero} ({habitadoToString(habitado)})</h1>
 
             <div className="container">
                 <div className="row">

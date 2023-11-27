@@ -9,10 +9,9 @@ import NavBarComponente from '../navbar/navbar';
 
 function MisReclamosComponente(){
 
-    const navigate = useNavigate();
-    const location = useLocation();
+    
 
-    const usuario = location.state && location.state.usuario;
+    const usuario = JSON.parse(localStorage.getItem('usuario'));
     //const usuario = useState({documento:persona.documento});
     const [reclamos, setReclamos] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -33,6 +32,7 @@ const obtenerReclamosPorPersona = async () => {
 
 useEffect( () => {
     obtenerReclamosPorPersona()
+    setLoading(false)
 }, [loading])
     
     return(
@@ -40,7 +40,8 @@ useEffect( () => {
             <NavBarComponente/>
             <div className='cuerpo'>
                 <h2 className='tituloReclamos'>Mis Reclamos</h2>
-                <div className='tabla-reclamos'>
+                {loading && <div className='spinner'></div>}
+                {!loading && <div className='tabla-reclamos'>
                     {reclamos.length > 0 && (
                         <table border="1">
                             <thead>
@@ -50,6 +51,7 @@ useEffect( () => {
                                 <th>Nombre de Persona</th>
                                 <th>Descripción</th>
                                 <th>Estado</th>
+                                <th>Sitio comun</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -60,6 +62,7 @@ useEffect( () => {
                                     <td>{`${reclamo.usuario.nombre}`}</td>
                                     <td>{reclamo.descripcion}</td>
                                     <td>{reclamo.estado}</td>
+                                    <td>{reclamo.unidad && ("No")}{!reclamo.unidad &&("Si")}</td>
                                 </tr>
                             ))}
                             </tbody>
@@ -68,7 +71,7 @@ useEffect( () => {
                      {reclamos.length === 0 && (
                         <h3>No hay reclamos</h3>
                      )}
-                </div>
+                </div>}
             </div>
         </div>
     );

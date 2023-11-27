@@ -9,46 +9,72 @@ import NavBarComponente from '../navbar/navbar';
 
 
 function ReclamoComponente(){
-
-  const navigate = useNavigate();
-  
   //Se requiere que el ingreso sea mínimo y cerrado. 
-  const location = useLocation();
 
-  const usuario = location.state && location.state.usuario;
+  const usuario = JSON.parse(localStorage.getItem('usuario'));
+  
+  //TODO: Ver como hacer lo de las imagenes
 
   const [unidad, setUnidad] = useState({piso:'', numero:'', codigoEdificio:''})
   //ver lo de imagenes
-  const [reclamo, setReclamo] = useState({documento:usuario.documento, codigoEdificio:'', ubicacion:'', descripcion:'', unidad:unidad, estado:'nuevo'});
+  const [reclamo, setReclamo] = useState({documento:usuario.documento, codigoEdificio:'', ubicacion:'', descripcion:'', unidad:null, estado:'nuevo'});
 
-  const manejarCambioEntradaUnidad = (e) => {
-    const nuevoValor = e.target.value;
-  
-    // Convierte codigoEdificio a un número antes de actualizar el estado
-    const valorReclamoUnidad = e.target.name === "codigoEdificio" ? parseInt(nuevoValor, 10) : nuevoValor;
-    console.log(valorReclamoUnidad)
-    setUnidad((prevUnidad) => ({ ...prevUnidad, [e.target.name]: valorReclamoUnidad }));
-  
-    // Actualiza el objeto reclamo con el estado más reciente de la unidad (teng que tener la unidad en reclamo y el codigoEdificio)
+  const manejarCambioCodigoEdificio = (e) => {
+    const nuevoValor = e.target.value
+
     setReclamo((prevReclamo) => ({
       ...prevReclamo,
-      unidad: { ...prevReclamo.unidad, [e.target.name]: valorReclamoUnidad },
-      codigoEdificio: valorReclamoUnidad // Asigna el valor también a codigoEdificio del reclamo
-    })); 
-  };
+      codigoEdificio: nuevoValor
+    }))
 
-const manejarCambioEntradaReclamo = (e) => {
-  setReclamo({ ...reclamo, [e.target.name]: e.target.value });
-};
+    setUnidad((prevUnidad) => ({
+      ...prevUnidad,
+      codigoEdificio: nuevoValor
+    }))
 
-  
+  }
 
+  const manejadorCambioUbicacion = (e) => {
+    const nuevoValor = e.target.value
+
+    setReclamo((prevReclamo) => ({
+      ...prevReclamo,
+      ubicacion: nuevoValor
+    }))
+  }
+
+  const manejadorCambioPiso = (e) => {
+    const nuevoValor = e.target.value
+
+    setUnidad((prevUnidad) => ({
+      ...prevUnidad,
+      piso: nuevoValor
+    }))
+  }
+
+  const manejadorCambioNumero = (e) => {
+    const nuevoValor = e.target.value
+
+    setUnidad((prevUnidad) => ({
+      ...prevUnidad,
+      numero: nuevoValor
+    }))
+  }
+
+  const manejadorCambioDescripcion = (e) => {
+    const nuevoValor = e.target.value
+
+    setReclamo((prevReclamo) => ({
+      ...prevReclamo,
+      descripcion: nuevoValor
+    }))
+  }
 
   //agregar el reclamo
-  const agregarReclamo = async (reclamo) => {
+  const agregarReclamo = async (reclamo,unidad) => {
+    reclamo = {...reclamo, unidad: unidad}
     console.log(reclamo)
     try {
-        console.log("ENTRO")
         const respuesta = await fetch('http://localhost/reclamos', {
           method: 'POST',
           headers: {
@@ -108,15 +134,15 @@ const [imagenes, setImagenes] = useState([]);
         <div className='contenedor-datos'>
 
         <form onSubmit={enviarFormulario}>
-            <input className='input-lectura' type='text' placeholder="Documento" name="documento" id='documento' value={usuario.documento} onChange={manejarCambioEntradaReclamo} readOnly/>
-            <input className='globo' type='text' placeholder="Codigo del Edificio" name="codigoEdificio" id='codigoEdificio' value={unidad.codigoEdificio} onChange={manejarCambioEntradaUnidad} required/>
-            <input className='globo' type='text' placeholder='Ubicacion' name='ubicacion' id='ubicacion' value={reclamo.ubicacion} onChange={manejarCambioEntradaReclamo}  required/>
+            <input className='input-lectura' type='text' placeholder="Documento" name="documento" id='documento' value={usuario.documento} readOnly/>
+            <input className='globo' type='text' placeholder="Codigo del Edificio" name="codigoEdificio" id='codigoEdificio' value={reclamo.codigoEdificio} onChange={manejarCambioCodigoEdificio} required/>
+            <input className='globo' type='text' placeholder='Ubicacion' name='ubicacion' id='ubicacion' value={reclamo.ubicacion} onChange={manejadorCambioUbicacion}  required/>
 
             
-            <input className='globo' type='text' placeholder='Piso' name='piso' id='piso' value={unidad.piso} onChange={manejarCambioEntradaUnidad} required/>
-            <input className='globo' type='text' placeholder='Número' name='numero' id='numero' value={unidad.numero} onChange={manejarCambioEntradaUnidad} required/>
+            <input className='globo' type='text' placeholder='Piso' name='piso' id='piso' value={unidad.piso} onChange={manejadorCambioPiso} required/>
+            <input className='globo' type='text' placeholder='Número' name='numero' id='numero' value={unidad.numero} onChange={manejadorCambioNumero} required/>
 
-            <textarea className='globo' type='text' placeholder='Descripción' name='descripcion' id='descripcion' value={reclamo.descripcion} maxLength='1000' onChange={manejarCambioEntradaReclamo}  required></textarea>
+            <textarea className='globo' type='text' placeholder='Descripción' name='descripcion' id='descripcion' value={reclamo.descripcion} maxLength='1000' onChange={manejadorCambioDescripcion}  required></textarea>
             <p className='contador-caracteres'>1000 caracteres</p>
 
             <input type="file" id="imagenes" name="imagenes" multiple onChange={mostrarImagenes}/>
@@ -134,7 +160,7 @@ const [imagenes, setImagenes] = useState([]);
           </div>
 
 
-            <button className='globo-boton' type='submit' onClick={ () => { agregarReclamo(reclamo) }}> Enviar Reclamo </button>
+            <button className='globo-boton' type='submit' onClick={ () => { agregarReclamo(reclamo, unidad) }}> Enviar Reclamo </button>
         
           </form>
 

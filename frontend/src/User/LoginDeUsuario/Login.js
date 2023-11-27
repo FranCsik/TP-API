@@ -18,11 +18,6 @@ function LoginComponente(){
 	//Persona
 	const [persona, setPersona] = useState({documento:'', password:''});
 
-	//para perfil
-	const [usuario, setUsuario] = useState(null);
-	// const [estaUsuario, setEstaUsuario] = useState(false);
-
-
 	//Guarda a la persona con sus datos
 	const manejarCambioEntrada = (e) => {
 	  setPersona({ ...persona, [e.target.name]: e.target.value });
@@ -31,8 +26,8 @@ function LoginComponente(){
   const logueado = () => {
 	console.log("refresh")
 	setInterval(() => {
-		if (logeado && usuario){
-			navigate('/home', { state: { usuario: usuario } });
+		if (logeado){
+			navigate('/home');
 		}
 	},200)
   }
@@ -83,8 +78,9 @@ function LoginComponente(){
 		return;
 	  }
 
-	  setUsuario(resultadoLogin);
+	  setPersona(resultadoLogin);
 	  setLogeado(true);
+	  localStorage.setItem('usuario', JSON.stringify(resultadoLogin));
 	  return
 	}
 

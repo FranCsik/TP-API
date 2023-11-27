@@ -1,25 +1,20 @@
 import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './Reclamo.css'
-import { useNavigate } from 'react-router-dom';
-import { useLocation } from 'react-router-dom';
 import NavBarComponente from '../navbar/navbar';
 
 
 function ReclamoComunComponente(){
 
-    const navigate = useNavigate();
-    const location = useLocation();
+  //TODO: Ver lo de las imagenes
 
-    const usuario = location.state && location.state.usuario;
-    //const [usuario, setUsuario] = useState({documento:persona.documento});
-    const [edificio, setEdificio] = useState({codigo:'0'});
-    //const [unidad, setUnidad] = useState({piso:'', numero:''}); 
-    //ver lo de imagenes
+    const [usuario, setUsuario] = useState(JSON.parse(localStorage.getItem('usuario')));
     const [reclamo, setReclamo] = useState({documento:usuario.documento, codigoEdificio:'', ubicacion:'', descripcion:'', estado:'nuevo'});
 
 
     //Manejadores de entrada
+
+    
     
     const manejarCambioEntradaReclamo = (e) => {
         setReclamo({ ...reclamo, [e.target.name]: e.target.value });
