@@ -132,7 +132,7 @@ public class Controlador {
 		try{
 			persona.setNombre(actualizacion.getNombre());
 			persona.setMail(actualizacion.getMail());
-			persona.setPassword(actualizacion.getContrasenia());
+			persona.setPassword(actualizacion.getPassword());
 			personaRepository.save(persona);
 		}catch (Exception e){
 			throw new PersonaException("No se pudo actualizar la persona");

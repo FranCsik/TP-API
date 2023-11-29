@@ -3,14 +3,14 @@ package com.example.demo.views;
 public class PersonaUpdateView {
 
     private String mail;
-    private String contrasenia;
+    private String password;
     private String nombre;
 
     public PersonaUpdateView() {}
 
-    public PersonaUpdateView(String mail, String contrasenia, String nombre) {
+    public PersonaUpdateView(String mail, String password, String nombre) {
         this.mail = mail;
-        this.contrasenia = contrasenia;
+        this.password = password;
         this.nombre = nombre;
     }
 
@@ -22,12 +22,12 @@ public class PersonaUpdateView {
         this.mail = mail;
     }
 
-    public String getContrasenia() {
-        return contrasenia;
+    public String getPassword() {
+        return password;
     }
 
-    public void setContrasenia(String contrasenia) {
-        this.contrasenia = contrasenia;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getNombre() {
@@ -37,7 +37,4 @@ public class PersonaUpdateView {
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
-
-    
-
 }

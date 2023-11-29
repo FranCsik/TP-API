@@ -6,15 +6,15 @@ public class PersonaCreateView {
 
     private String documento;
 	private String nombre;
-    private String contrasenia;
+    private String password;
     private String mail;
 	
 	public PersonaCreateView() {}
 
-    public PersonaCreateView(String documento, String nombre, String contrasenia, String mail) {
+    public PersonaCreateView(String documento, String nombre, String password, String mail) {
         this.documento = documento;
         this.nombre = nombre;
-        this.contrasenia = contrasenia;
+        this.password = password;
         this.mail = mail;
     }
 
@@ -34,12 +34,12 @@ public class PersonaCreateView {
         this.nombre = nombre;
     }
 
-    public String getContrasenia() {
-        return contrasenia;
+    public String getPassword() {
+        return password;
     }
 
-    public void setContrasenia(String contrasenia) {
-        this.contrasenia = contrasenia;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getMail() {
@@ -51,7 +51,7 @@ public class PersonaCreateView {
     }
     
     public Persona toModel() {
-    	return new Persona(documento, nombre, mail, contrasenia);
+    	return new Persona(documento, nombre, mail, password);
     }
     
 
