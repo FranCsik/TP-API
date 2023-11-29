@@ -16,6 +16,7 @@ import MisReclamos from "./User/ReclamosDelUsuario/misReclamos";
 import MisEdificios from "./User/MisEdificios/MisEdificios";
 import MisReclamosPorEdificio from "./User/ReclamosPorEdificio/MisReclamosPorEdificio";
 import MiPerfil from "./User/PerfilDelUsuario/MiPerfil";
+import VerReclamo from "./User/VerReclamo/VerReclamo";
 
 const router = createBrowserRouter([
   {
@@ -53,6 +54,14 @@ const router = createBrowserRouter([
   {
     path: "/mi-perfil",
     element:<MiPerfil></MiPerfil>
+  },
+  {
+    path: "/reclamos/:idReclamo",
+    element: <VerReclamo></VerReclamo>,
+  },
+  {
+    path: "/unidades/:codigoEdificio/:piso/:numero",
+    element: <Unidad></Unidad>,
   }
 ]);
 

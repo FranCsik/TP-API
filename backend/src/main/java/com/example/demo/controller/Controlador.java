@@ -455,4 +455,10 @@ public class Controlador {
 		}
 		return resultado;
 	}
+
+	public Reclamo agregarImagenesAReclamo(Reclamo reclamo, List<Imagen> imagenes) throws ReclamoException {
+		reclamo.agregarImagenes( imagenes );
+		Reclamo nuevoReclamo = reclamoRepository.save( reclamo );
+		return nuevoReclamo;
+	}
 }

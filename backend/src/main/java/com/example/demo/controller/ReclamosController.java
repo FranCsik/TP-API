@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -101,9 +102,22 @@ public class ReclamosController {
 	}
 
 	@PostMapping("/reclamos/{numero}/agregarImagen")
-	public ReclamoView agregarImagenAReclamo(@PathVariable int numero, @RequestBody Imagen imagen) throws ReclamoException {
+	public ReclamoView agregarImagenAReclamo(@PathVariable int numero, @RequestBody ImagenInputView imagen) throws ReclamoException {
 		Reclamo reclamo = controlador.buscarReclamo(numero);
-		Reclamo nuevoReclamo = controlador.agregarImagenAReclamo(reclamo, imagen);
+		Imagen imagenModel = new Imagen(imagen.getDireccion(), imagen.getTipo());
+		Reclamo nuevoReclamo = controlador.agregarImagenAReclamo(reclamo, imagenModel);
+		return nuevoReclamo.toView();
+	}
+
+	@PostMapping("/reclamos/{numero}/agregarImagenes")
+	public ReclamoView agregarImagenesAReclamo(@PathVariable int numero, @RequestBody List<ImagenInputView> imagenes) throws ReclamoException {
+		Reclamo reclamo = controlador.buscarReclamo(numero);
+		List<Imagen> imagenesModel = new ArrayList<Imagen>();
+		for (ImagenInputView imagenView : imagenes) {
+			Imagen imagen = new Imagen(imagenView.getDireccion(), imagenView.getTipo());
+			imagenesModel.add(imagen);
+		}
+		Reclamo nuevoReclamo = controlador.agregarImagenesAReclamo(reclamo, imagenesModel);
 		return nuevoReclamo.toView();
 	}
 

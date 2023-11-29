@@ -54,6 +54,10 @@ public class Reclamo {
 	public void agregarImagen(Imagen imagen) {
 		imagenes.add(imagen);
 	}
+
+	public void agregarImagenes(List<Imagen> imagenes) {
+		this.imagenes.addAll(imagenes);
+	}
 	
 	public int getNumero() {
 		return numero;

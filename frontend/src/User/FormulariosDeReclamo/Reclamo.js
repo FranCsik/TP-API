@@ -1,8 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './Reclamo.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { useLocation } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
 import NavBarComponente from '../navbar/navbar';
 
 
@@ -12,12 +10,29 @@ function ReclamoComponente(){
   //Se requiere que el ingreso sea mínimo y cerrado. 
 
   const usuario = JSON.parse(localStorage.getItem('usuario'));
+
+  //SOBRE IMAGENES
+  const [imagenes, setImagenes] = useState([]);
   
   //TODO: Ver como hacer lo de las imagenes
 
   const [unidad, setUnidad] = useState({piso:'', numero:'', codigoEdificio:''})
+  const [loading, setLoading] = useState(true);
+  const [edificios, setEdificios] = useState([]);
+  const [unidades, setUnidades] = useState([]);
   //ver lo de imagenes
   const [reclamo, setReclamo] = useState({documento:usuario.documento, codigoEdificio:'', ubicacion:'', descripcion:'', unidad:null, estado:'nuevo'});
+
+  useEffect(() => {
+    const fetchEdificios = async () => {
+        let resposeEdificios = await fetch(`http://localhost/personas/${usuario.documento}/edificios`);
+        let dataEdificios = await resposeEdificios.json();
+        setEdificios(dataEdificios);
+        setLoading(false);
+    }
+    fetchEdificios()
+  }, [loading])
+
 
   const manejarCambioCodigoEdificio = (e) => {
     const nuevoValor = e.target.value
@@ -70,6 +85,41 @@ function ReclamoComponente(){
     }))
   }
 
+  const generarOperacion = async (reclamo, unidad, imagenes) => {
+    let reclamoBD = await agregarReclamo(reclamo, unidad)
+    if (!reclamoBD){
+      alert('Error al agregar el reclamo')
+      return
+    }
+    let imagenesBD = await agregarImagenes(imagenes, reclamoBD)
+    if (!imagenesBD){
+      alert('Error al agregar las imagenes')
+    }
+  }
+
+  const agregarImagenes = async (imagenes, reclamoBD) => {
+    //Hacer endpoint para agregar imagenes
+    let imagenesAEnviar = []
+    for (let imagen of imagenes) {
+      let imagenAEnviar = { direccion:URL.createObjectURL(imagen), tipo:imagen.type.split('/')[1]}
+      imagenesAEnviar.push(imagenAEnviar)
+    }
+
+    let response = await fetch(`http://localhost/reclamos/${reclamoBD.numero}/agregarImagenes`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(imagenesAEnviar),
+    })
+
+    if (response.ok) {
+      return true
+    }
+    return false
+
+  }
+
   //agregar el reclamo
   const agregarReclamo = async (reclamo,unidad) => {
     reclamo = {...reclamo, unidad: unidad}
@@ -86,10 +136,9 @@ function ReclamoComponente(){
 
         });
         if (respuesta.ok) {
-            alert('Reclamo agregado con exito');
-        } else {
-            alert('No se pudo agregar el reclamo, puede que no tenga los permisos necesarios.');
+            return await respuesta.json();
         }
+        return null;
         } catch (error) {
           alert('Error de red');
         }
@@ -104,15 +153,16 @@ function enviarFormulario(e) {
   console.log("Formulario enviado, pero la página no se recargará");
 }
 
-
-
-//SOBRE IMAGENES
-const [imagenes, setImagenes] = useState([]);
-
   const mostrarImagenes = (event) => {
+    // const nuevosArchivos = Array.from(event.target.files);
+    // let nuevasImagenes = [];
+    // for (let archivo of nuevosArchivos) {
+    //   nuevasImagenes.push(URL.createObjectURL(archivo));
+    // }
     const nuevosArchivos = Array.from(event.target.files);
-
+    
     setImagenes([...imagenes, ...nuevosArchivos]);
+    console.log(imagenes);
   };
 
   const eliminarImagen = (index) => {
@@ -144,8 +194,7 @@ const [imagenes, setImagenes] = useState([]);
 
             <textarea className='globo' type='text' placeholder='Descripción' name='descripcion' id='descripcion' value={reclamo.descripcion} maxLength='1000' onChange={manejadorCambioDescripcion}  required></textarea>
             <p className='contador-caracteres'>1000 caracteres</p>
-
-            <input type="file" id="imagenes" name="imagenes" multiple onChange={mostrarImagenes}/>
+            <input style={{color:'transparent', maxWidth:"82px"}} type="file" id="imagenes" name="imagenes" accept='image/*' multiple onChange={mostrarImagenes}/>
             <div id="contenedor-imagenes">
             {imagenes.map((imagen, index) => (
               <div key={index} style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
@@ -158,15 +207,9 @@ const [imagenes, setImagenes] = useState([]);
               </div>
             ))}
           </div>
-
-
-            <button className='globo-boton' type='submit' onClick={ () => { agregarReclamo(reclamo, unidad) }}> Enviar Reclamo </button>
-        
+            <button className='globo-boton' type='submit' onClick={ () => { generarOperacion(reclamo,unidad,imagenes) }}> Enviar Reclamo </button>
           </form>
-
-
         </div>
-        
     </div>
   </div>
 

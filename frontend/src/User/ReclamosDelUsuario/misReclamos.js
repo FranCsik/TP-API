@@ -23,8 +23,8 @@ const obtenerReclamosPorPersona = async () => {
     try {
         const respuesta = await fetch(`http://localhost/reclamos/persona/${usuario.documento}`);
         const datos = await respuesta.json();
-        console.log(datos)
         setReclamos(datos);
+        setLoading(false)
     } catch (error) {
         console.error('Error al obtener reclamos', error);
     }
@@ -32,7 +32,6 @@ const obtenerReclamosPorPersona = async () => {
 
 useEffect( () => {
     obtenerReclamosPorPersona()
-    setLoading(false)
 }, [loading])
     
     return(
@@ -40,8 +39,8 @@ useEffect( () => {
             <NavBarComponente/>
             <div className='cuerpo'>
                 <h2 className='tituloReclamos'>Mis Reclamos</h2>
-                {loading && <div className='spinner'></div>}
-                {!loading && <div className='tabla-reclamos'>
+                {loading === true && <div className='spinner'></div>}
+                {loading === false && <div className='tabla-reclamos'>
                     {reclamos.length > 0 && (
                         <table border="1">
                             <thead>

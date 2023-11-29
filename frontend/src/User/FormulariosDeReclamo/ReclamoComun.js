@@ -20,12 +20,25 @@ function ReclamoComunComponente(){
         setReclamo({ ...reclamo, [e.target.name]: e.target.value });
     };
 
+
+    const generarOperacion = async (reclamo, imagenes) => {
+      await agregarReclamo(reclamo)
+      await agregarImagenes(imagenes)
+    }
+
+    const agregarImagenes = async (imagenes) => {
+      //Hacer endpoint para agregar imagenes
+  
+      console.log(imagenes)
+      
+  
+    }
     
   //agregar el reclamo
   const agregarReclamo = async (reclamo) => {
     console.log(reclamo)
+    return 
     try {
-        console.log("ENTRO")
         const respuesta = await fetch('http://localhost/reclamos', {
           method: 'POST',
           headers: {
@@ -61,9 +74,14 @@ function ReclamoComunComponente(){
     const [imagenes, setImagenes] = useState([]);
 
     const mostrarImagenes = (event) => {
-    const nuevosArchivos = Array.from(event.target.files);
-
-    setImagenes([...imagenes, ...nuevosArchivos]);
+      const nuevosArchivos = Array.from(event.target.files);
+      let nuevasImagenes = [];
+      for (let archivo of nuevosArchivos) {
+        nuevasImagenes.push(URL.createObjectURL(archivo));
+      }
+      
+      setImagenes([...imagenes, ...nuevasImagenes]);
+      console.log(imagenes);
     };
 
     const eliminarImagen = (index) => {
@@ -92,12 +110,12 @@ function ReclamoComunComponente(){
             <textarea className='globo' type='text' placeholder='Descripción' name='descripcion' id='descripcion' value={reclamo.descripcion} maxLength='1000' onChange={manejarCambioEntradaReclamo}  required></textarea>
             <p className='contador-caracteres'>1000 caracteres</p>
 
-            <input type="file" id="imagenes" name="imagenes" multiple onChange={mostrarImagenes}/>
+            <input style={{color:"transparent", maxWidth:"82px"}} type="file" id="imagenes" name="imagenes" accept='image/*' multiple onChange={mostrarImagenes}/>
             <div id="contenedor-imagenes">
             {imagenes.map((imagen, index) => (
               <div key={index} style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
                 <img
-                  src={URL.createObjectURL(imagen)}
+                  src={imagen}
                   style={{ width: '100px', marginLeft:'50px', marginTop:'20px' }}
                   alt={`Imagen ${index}`}
                 />
@@ -107,7 +125,7 @@ function ReclamoComunComponente(){
           </div>
 
 
-            <button className='globo-boton' type='submit' onClick={ () => { agregarReclamo(reclamo) }}> Enviar Reclamo </button>
+            <button className='globo-boton' type='submit' onClick={ () => { generarOperacion(reclamo, imagenes) }}> Enviar Reclamo </button>
         
           </form>
 

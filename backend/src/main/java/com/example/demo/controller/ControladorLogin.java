@@ -31,6 +31,7 @@ public class ControladorLogin {
 	@Autowired
 	AdministradorRepository administradorRepository;
 
+    @CrossOrigin
     @PostMapping("/login")
     public PersonaView login(@RequestBody LoginView loginView) throws Exception {
         return controlador.login(loginView.getdocumento(), loginView.getPassword());

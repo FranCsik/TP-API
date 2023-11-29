@@ -47,6 +47,6 @@ public class Imagen {
 	}
 	
 	public ImagenView toView() {
-		return new ImagenView( numero, direccion, tipo );  
+		return new ImagenView( numero ,direccion, tipo );  
 	}
 }
