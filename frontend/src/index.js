@@ -1,5 +1,6 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom/client";
+import css from "./index.css"
 
 import {
   createBrowserRouter,
@@ -7,16 +8,21 @@ import {
 } from "react-router-dom";
 import './index.css';
 import reportWebVitals from './reportWebVitals';
-import Login from './User/LoginDeUsuario/Login';
-import Home from './User/InicioDeUsuario/Home';
-import Reclamo from './User/FormulariosDeReclamo/Reclamo';
-import ReclamoComun from "./User/FormulariosDeReclamo/ReclamoComun";
-import Unidad from "./Componentes/Unidad";
-import MisReclamos from "./User/ReclamosDelUsuario/misReclamos";
-import MisEdificios from "./User/MisEdificios/MisEdificios";
-import MisReclamosPorEdificio from "./User/ReclamosPorEdificio/MisReclamosPorEdificio";
-import MiPerfil from "./User/PerfilDelUsuario/MiPerfil";
-import VerReclamo from "./User/VerReclamo/VerReclamo";
+import Login from './pages/Login';
+import Home from './pages/user/home/Home';
+import Reclamo from './pages/user/reclamoUnidad/Reclamo';
+import ReclamoComun from "./pages/user/reclamoComun/ReclamoComun";
+import Unidad from "./pages/admin/edificios/unidad/Unidad";
+import MisReclamos from "./pages/user/misReclamos/MisReclamos";
+import MisEdificios from "./pages/user/misEdificios/MisEdificios";
+import MisReclamosPorEdificio from "./pages/user/misEdificios/reclamosPorEdificio/MisReclamosPorEdificio";
+import MiPerfil from "./pages/user/miPerfil/MiPerfil";
+import VerReclamo from "./pages/user/verReclamo/VerReclamo";
+import ReclamoAdmin from "./prueba/ReclamoAdmin";
+import LoginAdmin from "./pages/LoginAdmin";
+import HomeAdmin from "./pages/admin/home/Home";
+import Edificios from "./pages/admin/edificios/Edificios"
+import Edificio from "./pages/admin/edificios/Edificio"
 
 const router = createBrowserRouter([
   {
@@ -56,13 +62,33 @@ const router = createBrowserRouter([
     element:<MiPerfil></MiPerfil>
   },
   {
-    path: "/reclamos/:idReclamo",
-    element: <VerReclamo></VerReclamo>,
-  },
-  {
     path: "/unidades/:codigoEdificio/:piso/:numero",
     element: <Unidad></Unidad>,
-  }
+  },
+  {
+    path:"/reclamos/:idReclamo",
+    element: <VerReclamo></VerReclamo>
+  },
+  {
+    path:"/login-admin",
+    element: <LoginAdmin></LoginAdmin>
+  },
+  {
+    path:"/home-admin",
+    element: <HomeAdmin></HomeAdmin>
+  },
+  {
+    path: "/prueba/:idReclamo",
+    element: <ReclamoAdmin></ReclamoAdmin>
+  },
+  {
+    path: "/edificios",
+    element: <Edificios></Edificios>
+  },
+  {
+    path: "edificios/:codigo",
+    element: <Edificio></Edificio>
+  },
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
@@ -71,7 +97,4 @@ ReactDOM.createRoot(document.getElementById("root")).render(
   </React.StrictMode>
 );
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();

@@ -1,0 +1,18 @@
+export const convertToBase64 = async (file) => {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader()
+        reader.readAsDataURL(file)
+        reader.onload = () => {
+          resolve(reader.result)
+        }
+        reader.onerror = reject
+      })
+}
+
+export const validarInputs = (...inputs) => {
+
+}
+
+export const estado = [
+  "nuevo", "abierto", "enProceso", "desestimado", "anulado", "terminado"
+]

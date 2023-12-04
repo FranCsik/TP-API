@@ -11,7 +11,7 @@ public class Imagen {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int numero;
-	@Column(name="path")
+	@Column(name="path", length = 3000000)
 	private String direccion;
 	private String tipo;
 	

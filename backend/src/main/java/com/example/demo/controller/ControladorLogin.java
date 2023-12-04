@@ -11,11 +11,10 @@ import com.example.demo.dao.EdificioRepository;
 import com.example.demo.dao.PersonaRepository;
 import com.example.demo.dao.ReclamoRepository;
 import com.example.demo.dao.UnidadRepository;
-import com.example.demo.model.Persona;
 import com.example.demo.views.LoginView;
 import com.example.demo.views.PersonaView;
 
-// @CrossOrigin(origins = "*")
+@CrossOrigin
 @RestController
 public class ControladorLogin {
     @Autowired
@@ -34,7 +33,13 @@ public class ControladorLogin {
     @CrossOrigin
     @PostMapping("/login")
     public PersonaView login(@RequestBody LoginView loginView) throws Exception {
-        return controlador.login(loginView.getdocumento(), loginView.getPassword());
+        return controlador.login(loginView.getdocumento(), loginView.getPassword()).toPersonaView();
     }
+
+	@CrossOrigin
+	@PostMapping("/login-admin")
+	public PersonaView loginAdmin(@RequestBody LoginView loginView) throws Exception {
+		return controlador.loginAdmin(loginView.getdocumento(), loginView.getPassword()).toPersonaView();
+	}
 
 }

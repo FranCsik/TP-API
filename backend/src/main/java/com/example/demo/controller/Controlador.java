@@ -245,17 +245,9 @@ public class Controlador {
 				}
 			}
 		}else{
-			if (unidad.getInquilinos().size() > 0){
-				for (Persona inquilino : unidad.getInquilinos()) {
-					if (inquilino.getDocumento().equals(persona.getDocumento())) {
-						return;
-					}
-			}
-			}else{
-				for (Persona duenio : unidad.getDuenios()) {
-					if (duenio.getDocumento().equals(persona.getDocumento())) {
-						return;
-					}
+			for (Persona habilitado:unidad.habilitados()) {
+				if (habilitado.getDocumento().equals(persona.getDocumento())) {
+					return;
 				}
 			}
 		}
@@ -268,13 +260,14 @@ public class Controlador {
 		return reclamoNuevo;
 	}
 
-	public PersonaView login(String documento, String password) throws Exception{
+	public Persona login(String documento, String password) throws Exception{
 		//TODO: Se debe agregar capa de seguridad, y tirar un request con mail y contraseña?
 
 		Optional<Persona> persona = personaRepository.findById(documento);
 		if (persona.isPresent()){
-			if (persona.get().getPassword().equals(password)){
-				return persona.get().toPersonaView();
+			Persona p = persona.get();
+			if (p.getPassword().equals(password)){
+				return persona.get();
 			}
 		}
 		throw new Exception("Las credenciales son invalidas");
@@ -364,8 +357,8 @@ public class Controlador {
 	public Administrador buscarAdministrador(String documento){
 		try{
 			Persona persona = buscarPersona(documento);
-			Administrador administrador = administradorRepository.findByPersona(persona);
-			return administrador;
+			Optional<Administrador> administrador = administradorRepository.findByPersona(persona);
+			return administrador.get();
 		}catch (Exception e){
 
 		}
@@ -429,11 +422,16 @@ public class Controlador {
 		return resultado;
 	}
 
-	public List<Reclamo> misReclamos(Edificio edificio, Persona persona){
+	public List<Reclamo> misReclamos(Edificio edificio, Persona persona, Estado estado){
 
-		List<Unidad> unidades = getUnidadesPorPersonaEnEdificio(edificio,persona);
+		List<Unidad> unidades = misUnidadesEnEdificio(edificio,persona);
 		List<Reclamo> resultado = new ArrayList<Reclamo>();
-		List<Reclamo> reclamos = reclamoRepository.findByEdificio(edificio);
+		List<Reclamo> reclamos = null;
+		if (estado != null){
+			reclamos = reclamoRepository.findByEdificioAndEstado(edificio, estado);
+		}else{
+			reclamos = reclamoRepository.findByEdificio(edificio);
+		}
 		for(Reclamo reclamo : reclamos){
 			if (unidades.contains(reclamo.getUnidad())){
 				resultado.add(reclamo);
@@ -445,7 +443,7 @@ public class Controlador {
 		return resultado;
 	}
 
-	public List<Unidad> getUnidadesPorPersonaEnEdificio(Edificio edificio, Persona persona){
+	public List<Unidad> misUnidadesEnEdificio(Edificio edificio, Persona persona){
 		List<Unidad> resultado = new ArrayList<Unidad>();
 		List<Unidad> unidades = edificio.getUnidades();
 		for(Unidad unidad : unidades){
@@ -456,9 +454,25 @@ public class Controlador {
 		return resultado;
 	}
 
+	public boolean esAdministrador(Persona persona) throws Exception{
+		Optional<Administrador> administrador = administradorRepository.findByPersona(persona);
+		if (administrador.isPresent()){
+			return true;
+		}
+		return false;
+	}
+
 	public Reclamo agregarImagenesAReclamo(Reclamo reclamo, List<Imagen> imagenes) throws ReclamoException {
 		reclamo.agregarImagenes( imagenes );
 		Reclamo nuevoReclamo = reclamoRepository.save( reclamo );
 		return nuevoReclamo;
+	}
+
+	public Persona loginAdmin(String documento, String password) throws Exception{
+		Persona persona = login(documento, password);
+		if (esAdministrador(persona)){
+			return persona;
+		}
+		throw new Exception("Las credenciales son invalidas");
 	}
 }

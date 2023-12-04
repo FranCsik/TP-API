@@ -123,13 +123,26 @@ public class EdificioController {
 
 	@CrossOrigin
 	@GetMapping("/edificios/{codigo}/reclamos/{documento}")
-	public List<ReclamoView> misReclamos(@PathVariable int codigo, @PathVariable String documento) throws EdificioException, PersonaException{
+	public List<ReclamoView> misReclamos(@PathVariable int codigo, @PathVariable String documento, @RequestParam(required = false) Estado estado) throws EdificioException, PersonaException{
 		Edificio edificio = controlador.buscarEdificio(codigo);
 		Persona persona = controlador.buscarPersona(documento);
-		List<Reclamo> reclamos = controlador.misReclamos(edificio, persona);
+		List<Reclamo> reclamos = controlador.misReclamos(edificio, persona, estado);
 		List<ReclamoView> resultado = new ArrayList<ReclamoView>();
 		for (Reclamo reclamo : reclamos) {
 			resultado.add(reclamo.toView());
+		}
+		return resultado;
+	}
+
+	@CrossOrigin
+	@GetMapping("/edificios/{codigo}/unidades/{documento}")
+	public List<UnidadView> misUnidades(@PathVariable int codigo, @PathVariable String documento) throws EdificioException, PersonaException{
+		Edificio edificio = controlador.buscarEdificio(codigo);
+		Persona persona = controlador.buscarPersona(documento);
+		List<Unidad> unidades = controlador.misUnidadesEnEdificio(edificio, persona);
+		List<UnidadView> resultado = new ArrayList<UnidadView>();
+		for (Unidad unidad : unidades) {
+			resultado.add(unidad.toView());
 		}
 		return resultado;
 	}

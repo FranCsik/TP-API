@@ -4346,7 +4346,7 @@ create table reclamos(
 
 create table imagenes(
 	numero int not null identity,
-	path varchar(300) not null,
+	path varchar(MAX) not null,
 	tipo varchar(10),
 	idReclamo int,
 	constraint pk_imagenes primary key (numero),

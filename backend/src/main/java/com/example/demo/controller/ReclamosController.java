@@ -58,28 +58,6 @@ public class ReclamosController {
 		return controlador.buscarReclamo(numero).toView();
 	}
 
-    // @GetMapping("/reclamos/persona/{documento}&estado={estado}")
-    // public List<ReclamoView> reclamosPorPersona(@PathVariable String documento, @PathVariable("estado") Optional<Estado> estado) {
-	// 	//TODO: Se debe poder filtrar por nuevos, cerrados, etc
-	// 	if (estado.isPresent()){
-	// 		Persona persona = personaRepository.findById( documento ).get();
-	// 		List<Reclamo> reclamos = reclamoRepository.findByUsuarioAndEstado(persona, estado.get());
-	// 		List<ReclamoView> resultado = new ArrayList<ReclamoView>();
-	// 		for( Reclamo r: reclamos ) {
-	// 			resultado.add( r.toView() );
-	// 		}
-	// 		return resultado;
-	// 	}else{
-	// 		Persona persona = personaRepository.findById( documento ).get();
-	// 		List<Reclamo> reclamos = reclamoRepository.findByUsuario( persona );
-	// 		List<ReclamoView> resultado = new ArrayList<ReclamoView>();
-	// 		for( Reclamo r: reclamos ) {
-	// 			resultado.add( r.toView() );
-	// 		}
-	// 		return resultado;
-	// 	}
-	// }
-
 	@GetMapping("/reclamos/persona/{documento}")
 	public List<ReclamoView> reclamosPorPersona(@PathVariable String documento, @RequestParam(required = false) Estado estado) throws PersonaException{
 		Persona persona = controlador.buscarPersona(documento);

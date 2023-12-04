@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -62,8 +63,8 @@ public class AdministradorController {
     public void deleteAdministrador(@PathVariable String documento) {
         try{
             Persona persona = controlador.buscarPersona(documento);
-            Administrador administrador = administradorRepository.findByPersona(persona);
-            controlador.eliminarAdministrador(administrador);
+            Optional<Administrador> administrador = administradorRepository.findByPersona(persona);
+            controlador.eliminarAdministrador(administrador.get());
         }catch (PersonaException e){
             e.printStackTrace();
         }
