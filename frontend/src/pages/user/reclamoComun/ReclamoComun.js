@@ -19,6 +19,7 @@ function ReclamoComun(){
         let resposeEdificios = await fetch(`http://localhost/personas/${usuario.documento}/edificios`);
         let dataEdificios = await resposeEdificios.json();
         setEdificios(dataEdificios);
+        setImagenes([])
         setLoading(false);
     }
     fetchEdificios()
@@ -69,6 +70,7 @@ function ReclamoComun(){
       return
     }
     alert('Reclamo agregado con exito')
+    setLoading(true)
   }
 
   const agregarImagenes = async (imagenes, reclamoBD) => {

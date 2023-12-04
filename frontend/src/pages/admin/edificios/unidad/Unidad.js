@@ -208,8 +208,6 @@ function Unidad(){
         setLoading(true);
     }
 
-
-
     return(
         <div className='flex flex-col h-full gap-10'>
             <NavBar/>
