@@ -96,21 +96,25 @@ function ReclamoComponente(){
   }
 
   const agregarImagenes = async (imagenes, reclamoBD) => {
-    let imagenesAEnviar = []
-    for (let imagen of imagenes) {
-      let imagenAEnviar = { direccion:await common.convertToBase64(imagen), tipo:imagen.type.split('/')[1]}
-      imagenesAEnviar.push(imagenAEnviar)
+    if (imagenes.length === 0){
+      return true
     }
-    console.log("Imagenes a enviar",imagenesAEnviar)
-    let response = await fetch(`http://localhost/reclamos/${reclamoBD.numero}/agregarImagenes`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(imagenesAEnviar),
-    })
-    return response.ok ? true : false
-  }
+
+    for (let imagen of imagenes) {
+      let imagenAEnviar = { direccion: await common.convertToBase64(imagen), tipo:imagen.type.split('/')[1]}
+      let response = await fetch(`http://localhost/reclamos/${reclamoBD.numero}/agregarImagen`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(imagenAEnviar),
+      })
+      if (response.status !== 200){
+        return false
+      }
+    }
+    return true
+}
 
   const agregarReclamo = async (reclamo) => {
     try {

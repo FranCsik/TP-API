@@ -59,11 +59,6 @@ function Unidad(){
         );
     };
 
-    const unidadesBoton = (e, id) => {
-        e.preventDefault();
-
-    }
-
     const eliminarInquilino = async (e, inquilino) => {
         e.preventDefault();
 
@@ -259,7 +254,7 @@ function Unidad(){
                                         <td>{inquilino.documento}</td>
                                         <td>{inquilino.nombre}</td>
                                         <td>
-                                            <button type="submit" className="btn btn btn-primary ms-1" onClick={ (e) => unidadesBoton(e, inquilino.documento) }>Ver</button>
+                                            <button type="submit" className="btn btn btn-primary ms-1"><a className='no-underline text-white' href={`/usuarios/${inquilino.documento}`}>Ver</a></button>
                                             <button type="submit" className="btn btn btn-danger ms-1" onClick={ (e) => eliminarInquilino(e, inquilino)}>Eliminar</button>
                                         </td>
                                     </tr>
@@ -300,7 +295,7 @@ function Unidad(){
                                         <td>{propietario.documento}</td>
                                         <td>{propietario.nombre}</td>
                                         <td>
-                                            <button type="submit" className="btn btn btn-primary ms-1" onClick={ (e) => unidadesBoton(e, propietario.documento) }>Ver</button>
+                                            <button type="submit" className="btn btn btn-primary ms-1"><a className='no-underline text-white' href={`/usuarios/${propietario.documento}`}>Ver</a></button>
                                             <button type="submit" className="btn btn btn-danger ms-1" onClick={ (e) => eliminarDuenio(e, propietario)}>Eliminar</button>
                                         </td>
                                     </tr>
@@ -334,108 +329,4 @@ function Unidad(){
 
 export default Unidad;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-{/* <div>
-        <h1 className="text-center my-3 pb-3">Edificio {params.codigoEdificio}, piso {params.piso}, número {params.numero} ({habitadoToString(habitado)})</h1>
-
-        
-        <section>
-
-
-
-            <div className="container py-5 h-100">
-                <div className="row d-flex justify-content-center align-items-center h-100">
-                <div className="col col-lg-12 col-xl-8">
-                    <div className="card rounded-3">
-                    
-                    </div>
-                </div>
-                </div>
-            </div>
-        </section>
-        
-
-        <section>
-
-
-
-            <div className="container py-5 h-100">
-                <div className="row d-flex justify-content-center align-items-center h-100">
-                <div className="col col-lg-12 col-xl-8">
-                    <div className="card rounded-3">
-                    <div className="card-body p-">
-
-                        <h2 className="text-center my-3 pb-3">Propietarios</h2>
-
-
-                        <table className="table mb-3">
-                        <thead>
-                            <tr>
-                            <th scope="col">DNI</th>
-                            <th scope="col">Nombre</th>
-                            <th scope="col">Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-
-                            {duenios.map((propietario) => (
-                                <tr>
-                                    <th scope="row">{propietario.documento}</th>
-                                    <td>{propietario.nombre}</td>
-                                    <td>
-                                        <button type="submit" className="btn btn btn-primary ms-1" onClick={ (e) => unidadesBoton(e, propietario.documento) }>Ver</button>
-                                        <button type="submit" className="btn btn btn-danger ms-1" onClick={ (e) => eliminarDuenio(e, propietario)}>Eliminar</button>
-                                    </td>
-                                </tr>
-                            ))}
-
-                            <tr>        
-                                    <th scope="row">#</th>
-                                    <td>
-                                    <select className="form-control" id="dniPropietario" name="dniPropietario" onChange={manejoDatos}>
-                                            <option disabled selected={true}>Seleccione un propietario</option>
-                                        {personas.map((persona) => (
-                                            <option value={persona.documento}>{persona.nombre}, {persona.documento}</option>
-                                        ))}
-                                        
-                                    </select>
-                                    </td>
-
-                                    <td>
-                                        <button type="submit" className="btn btn-success ms-1" onClick={ (e) => agregarPropietario(e)}>Agregar</button>
-                                        <button type="submit" className="btn btn-secondary" onClick={ (e) => transferirUnidad(e) }>Transferir</button>
-                                    </td>
-                                </tr>
-                
-                        </tbody>
-                        </table>
-
-                    </div>
-                    </div>
-                </div>
-                </div>
-            </div>
-        </section>
-        </div> */}
      

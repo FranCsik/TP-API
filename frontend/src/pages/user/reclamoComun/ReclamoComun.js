@@ -74,6 +74,9 @@ function ReclamoComun(){
   }
 
   const agregarImagenes = async (imagenes, reclamoBD) => {
+    if (imagenes.length === 0){
+      return true
+    }
     
     for (let imagen of imagenes) {
       let imagenAEnviar = { direccion: await common.convertToBase64(imagen), tipo:imagen.type.split('/')[1]}
@@ -84,8 +87,11 @@ function ReclamoComun(){
         },
         body: JSON.stringify(imagenAEnviar),
       })
-      return response.ok ? true : false
+      if (response.status !== 200){
+        return false
+      }
     }
+    return true
   }
 
   const agregarReclamo = async (reclamo) => {

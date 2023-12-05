@@ -56,7 +56,10 @@ function Reclamos(){
                 ):(
                     <div className="flex flex-col h-full items-center gap-6 overflow-auto p-6">
                         <h1>Reclamos</h1>
-                        <Form>
+
+                        {reclamos.length > 0 ? (
+                        <div>
+                            <Form>
                             <Form.Group controlId='estado'>
                                 <Form.Label>Estado</Form.Label>
                                 <Form.Select onChange={manejarEstado}>
@@ -104,6 +107,14 @@ function Reclamos(){
                                 </tbody>
                             </Table>
                         </div>
+                        </div>
+                            
+                        ):(
+                            <div>
+                                <h3>No hay reclamos</h3>
+                            </div>
+                        )}
+                        
                     </div>
                 )}
         </div>
