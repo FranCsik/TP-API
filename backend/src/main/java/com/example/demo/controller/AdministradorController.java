@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,6 +22,7 @@ import com.example.demo.model.Administrador;
 import com.example.demo.model.Persona;
 import com.example.demo.views.PersonaView;
 
+@CrossOrigin
 @RestController
 public class AdministradorController {
     @Autowired
@@ -69,4 +71,17 @@ public class AdministradorController {
             e.printStackTrace();
         }
     }
+
+    @GetMapping("/administradores/{documento}")
+    public PersonaView getAdministrador(@PathVariable String documento) throws PersonaException {
+        
+            Persona persona = controlador.buscarPersona(documento);
+            Optional<Administrador> administrador = administradorRepository.findByPersona(persona);
+            if (!administrador.isPresent()){
+                throw new PersonaException("No existe un administrador con ese documento");
+            }
+            return administrador.get().getPersona().toView();
+        
+    }
+
 }

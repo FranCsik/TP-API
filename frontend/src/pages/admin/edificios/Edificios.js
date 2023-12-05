@@ -73,43 +73,38 @@ function Edificios(){
                     </div>
                 ):(
                     <div>
-                        {edificios.length > 0 ? (
-                            <Table striped bordered hover>
-                                <thead>
+                        <Table striped bordered hover>
+                            <thead>
+                                <tr>
+                                    <th scope="col">Numero</th>
+                                    <th scope="col">Nombre</th>
+                                    <th scope="col">Dirección</th>
+                                    <th scope="col">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {edificios.map((edificio) => (
                                     <tr>
-                                        <th scope="col">Numero</th>
-                                        <th scope="col">Nombre</th>
-                                        <th scope="col">Dirección</th>
-                                        <th scope="col">Acciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-
-                                    {edificios.map((edificio) => (
-                                        <tr>
-                                            <td>{edificio.codigo}</td>
-                                            <td>{edificio.nombre}</td>
-                                            <td>{edificio.direccion}</td>
-                                            <td className='flex gap-2'>
-                                                <Button><Link className='text-white no-underline' to={`${edificio.codigo}`}>Ver</Link></Button>
-                                                <Button variant="danger" onClick={ (e) => eliminarBoton(e, edificio.codigo) }>Eliminar</Button>
-                                            </td>
-                                        </tr>
-                                    ))}
-
-                                    <tr>        
-                                        <td>#</td>
-                                        <td><input type="text" className="form-control" id="nombre" name="nombre" placeholder="Nombre" aria-label="Nombre" aria-describedby="basic-addon2" onChange={manejoDatos}/></td>
-                                        <td><input type="text" className="form-control" id="direccion" name="direccion" placeholder="Dirección" aria-label="Dirección" aria-describedby="basic-addon2" onChange={manejoDatos}/></td>
-                                        <td>
-                                            <button type="submit" className="btn btn-success ms-1" onClick={crearBoton}>Crear</button>
+                                        <td>{edificio.codigo}</td>
+                                        <td>{edificio.nombre}</td>
+                                        <td>{edificio.direccion}</td>
+                                        <td className='flex gap-2'>
+                                            <Button><Link className='text-white no-underline' to={`${edificio.codigo}`}>Ver</Link></Button>
+                                            <Button variant="danger" onClick={ (e) => eliminarBoton(e, edificio.codigo) }>Eliminar</Button>
                                         </td>
                                     </tr>
-                                </tbody>
-                            </Table>
-                        ):(
-                            <h3>No hay Edificios</h3>
-                        )}
+                                ))}
+
+                                <tr>        
+                                    <td>#</td>
+                                    <td><input type="text" className="form-control" id="nombre" name="nombre" placeholder="Nombre" aria-label="Nombre" aria-describedby="basic-addon2" onChange={manejoDatos}/></td>
+                                    <td><input type="text" className="form-control" id="direccion" name="direccion" placeholder="Dirección" aria-label="Dirección" aria-describedby="basic-addon2" onChange={manejoDatos}/></td>
+                                    <td>
+                                        <button type="submit" className="btn btn-success ms-1" onClick={crearBoton}>Crear</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </Table>
                     </div>
                 )}
             </div>

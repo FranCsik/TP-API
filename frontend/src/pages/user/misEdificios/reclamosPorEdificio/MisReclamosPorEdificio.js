@@ -4,7 +4,7 @@ import NavBar from '../../../../componentes/navbar/navbar';
 import Spinner from 'react-bootstrap/Spinner';
 import Table from 'react-bootstrap/Table';
 import { Link } from 'react-router-dom';
-import { Button } from 'react-bootstrap';
+import { Button, Form } from 'react-bootstrap';
 
 
 function MisEdificiosComponente(){
@@ -14,10 +14,20 @@ function MisEdificiosComponente(){
     const [edificio, setEdificio] = useState({});
     const [reclamos, setReclamos] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [estado, setEstado] = useState("ninguno");
+
+    const manejarEstado = (e) => {
+        setEstado(e.target.value);
+        setLoading(true);
+    }
+
+    const estados = [
+        "ninguno", "nuevo", "abierto", "enProceso", "desestimado", "anulado", "terminado"
+    ]
 
     useEffect( () => {
         const fetchReclamos = async () => {
-            let response = await fetch(`http://localhost/edificios/${params.codigoEdificio}/reclamos/${usuario.documento}`);
+            let response = await fetch(`http://localhost/edificios/${params.codigoEdificio}/reclamos/${usuario.documento}${estado == "ninguno" ? '' : `?estado=${estado}` }`);
             let data = await response.json();
             setReclamos(data);
             
@@ -50,7 +60,18 @@ function MisEdificiosComponente(){
 
                 <div className="flex flex-col h-full items-center gap-6">
                     <h1>{edificio.nombre} - {edificio.direccion}</h1>
-                    <div>
+                    <div className='flex flex-col gap-4'>
+                        <Form>
+                            <Form.Group controlId='estado'>
+                                <Form.Label>Estado</Form.Label>
+                                <Form.Select onChange={manejarEstado}>
+                                    <option value={estado}>{estado}</option>
+                                    {estados.map((estadoMap) => {
+                                        return estadoMap != estado && (<option value={estadoMap}>{estadoMap}</option>)
+                                    })}
+                                </Form.Select>
+                            </Form.Group>
+                        </Form>
                         {reclamos.length > 0 ? (
                         <Table striped bordered hover>
                         <thead>

@@ -16,11 +16,8 @@ function NavBarAdmin(){
                     <Nav.Link href="/home-admin">Home</Nav.Link>
                     <Nav.Link href="/reclamos">Reclamos</Nav.Link>
                     <Nav.Link href="/edificios">Edificios</Nav.Link>
-                    {/* <Nav.Link href="/reclamo-unidad">Reclamar Unidad</Nav.Link>
-                    <Nav.Link href="/reclamo-comun">Reclamar Sector Comun</Nav.Link>
-                    <Nav.Link href="/mis-edificios">Mis Edificios</Nav.Link>
-                    <Nav.Link href="/mis-reclamos">Mis Reclamos</Nav.Link>
-                    <Nav.Link href="/mi-perfil">Mi Perfil</Nav.Link> */}
+                    <Nav.Link href="/usuarios">Usuarios</Nav.Link>
+                    <Nav.Link href='/perfil'>Mi Perfil</Nav.Link>
                     <button onClick={() => {cerrarSesion()}}>
                         <Nav.Link href="/login-admin">Cerrar Sesion</Nav.Link>
                     </button>

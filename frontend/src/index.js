@@ -18,11 +18,16 @@ import MisEdificios from "./pages/user/misEdificios/MisEdificios";
 import MisReclamosPorEdificio from "./pages/user/misEdificios/reclamosPorEdificio/MisReclamosPorEdificio";
 import MiPerfil from "./pages/user/miPerfil/MiPerfil";
 import VerReclamo from "./pages/user/verReclamo/VerReclamo";
-import ReclamoAdmin from "./prueba/ReclamoAdmin";
 import LoginAdmin from "./pages/LoginAdmin";
 import HomeAdmin from "./pages/admin/home/Home";
 import Edificios from "./pages/admin/edificios/Edificios"
 import Edificio from "./pages/admin/edificios/Edificio"
+import Reclamos from "./pages/admin/reclamos/Reclamos"
+import VerReclamoAdmin from "./pages/admin/reclamos/Reclamo"
+import ActualizarReclamo from "./pages/admin/reclamos/ActualizarReclamo";
+import Usuarios from "./pages/admin/usuarios/Usuarios";
+import Usuario from "./pages/admin/usuarios/Usuario";
+import Perfil from "./pages/admin/Perfil";
 
 const router = createBrowserRouter([
   {
@@ -78,10 +83,6 @@ const router = createBrowserRouter([
     element: <HomeAdmin></HomeAdmin>
   },
   {
-    path: "/prueba/:idReclamo",
-    element: <ReclamoAdmin></ReclamoAdmin>
-  },
-  {
     path: "/edificios",
     element: <Edificios></Edificios>
   },
@@ -89,6 +90,30 @@ const router = createBrowserRouter([
     path: "edificios/:codigo",
     element: <Edificio></Edificio>
   },
+  {
+    path: "/reclamos",
+    element: <Reclamos></Reclamos>
+  },
+  {
+    path: "verReclamos/:idReclamo",
+    element: <VerReclamoAdmin></VerReclamoAdmin>
+  },
+  {
+    path: "/reclamos/:idReclamo/actualizar",
+    element: <ActualizarReclamo></ActualizarReclamo>
+  },
+  {
+    path: "/usuarios",
+    element: <Usuarios></Usuarios>
+  },
+  {
+    path: "/usuarios/:documento",
+    element: <Usuario></Usuario>
+  },
+  {
+    path: "/perfil",
+    element: <Perfil></Perfil>
+  }
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(

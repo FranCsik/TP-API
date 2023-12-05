@@ -11,6 +11,7 @@ import com.example.demo.views.*;
 import com.example.demo.dao.*;
 import com.example.demo.exceptions.*;
 
+@CrossOrigin
 @RestController
 public class ReclamosController {
 	@Autowired

@@ -14,14 +14,13 @@ function HomeAdmin(){
                 <h1>¡Bienvenido/a! {usuario.nombre}</h1>
                 <div className='flex gap-10'>
                     <Button>
-                        <Link className='text-white no-underline' to='/reclamos'>Reclamos</Link>
+                        <a className='text-white no-underline' href='/reclamos'>Reclamos</a>
                     </Button>
                     <Button>
                         <a  className='text-white no-underline' href="/edificios">Edificios</a>
-                        {/* <Link className='text-white no-underline' to='/edificios'>Edificios</Link> */}
                     </Button>
                     <Button>
-                        <Link className='text-white no-underline' to='/usuarios'>Usuarios</Link>
+                        <a className='text-white no-underline' href='/usuarios'>Usuarios</a>
                     </Button>
                 </div>
             </div>

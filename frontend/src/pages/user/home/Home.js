@@ -22,12 +22,12 @@ function HomeComponente(){
                 <div className="w-[1200px] flex justify-around">
                     <div className="flex flex-col gap-4">
                         <p className="text-center max-w-[220px]">Reportar desperfecto en una unidad en particular</p>
-                        <Button variant='primary'><Link className='no-underline bg-transparent text-white' to='/reclamo-unidad'>Reclamar</Link></Button>
+                        <Button variant='primary'><a className='no-underline bg-transparent text-white' href='/reclamo-unidad'>Reclamar</a></Button>
                     </div>
 
                     <div className="flex flex-col gap-4">
                         <div className="text-center max-w-[220px]">Reportar desperfecto en una parte comunitaria</div>
-                        <Button variant='primary'><Link className='no-underline bg-transparent text-white' to='/reclamo-comun'>Reclamar</Link></Button>
+                        <Button variant='primary'><a className='no-underline bg-transparent text-white' href='/reclamo-comun'>Reclamar</a></Button>
                     </div>
                 </div>
             </div>
